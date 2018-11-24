@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11a6bde6d5418384a8bd60d3daf47c73, type: 3}
+  m_Name: PlayerPreset
+  m_EditorClassIdentifier: 
+  Name: Player
+  Tag: Player
+  WalkSpeed: 5
+  RunMultiplier: 1.3
+  CrouchMultiplier: 0.6
+  JumpForce: 50
+  Radius: 0.35
+  Height: 1.75
+  MaxSlopeAngle: 45

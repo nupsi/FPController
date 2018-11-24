@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace FPController
 {
@@ -15,6 +14,7 @@ namespace FPController
         private KeyCode m_crouchKey = KeyCode.LeftControl;
         private KeyCode m_runKey = KeyCode.LeftShift;
         private InputAction[] m_events;
+        private float m_lookSpeed = 2;
 
         /*
          * MonoBehaviour Functions.
@@ -74,7 +74,7 @@ namespace FPController
         {
             get
             {
-                return Input.GetAxis("Mouse X");
+                return Input.GetAxis("Mouse X") * m_lookSpeed;
             }
         }
 
@@ -82,7 +82,7 @@ namespace FPController
         {
             get
             {
-                return Input.GetAxis("Mouse Y");
+                return Input.GetAxis("Mouse Y") * m_lookSpeed;
             }
         }
 

@@ -3,6 +3,12 @@ using UnityEngine;
 
 namespace FPController
 {
+    /// <summary>
+    /// Input Action to store two actions to be called on KeyDown() and KeyUp() when KeyCode is Up/Down.
+    /// <see cref="KeyDown"/>
+    /// <see cref="KeyUp"/>
+    /// <see cref="KeyCode"/>
+    /// </summary>
     public class InputAction
     {
         /*

@@ -81,46 +81,10 @@ namespace FPController
         private float m_targetSpeed = 5;
 
         /// <summary>
-        /// Charachters target walk speed.
+        /// Preset for settings used for controller.
         /// </summary>
-        private float m_walkSpeed = 5;
-
-        /// <summary>
-        /// Charachters target run speed (walk * run multiplier).
-        /// </summary>
-        private float m_runMultiplier = 1.3f;
-
-        /// <summary>
-        /// Charachters target crouching speed (walk * crouch multiplier).
-        /// </summary>
-        private float m_crouchMultiplier = 0.6f;
-
-        /// <summary>
-        /// Cameras look speed (sensitivy).
-        /// </summary>
-        private float m_lookSpeed = 2;
-
-        /// <summary>
-        /// Force added to make rigidbody jump.
-        /// </summary>
-        private float m_jumpForce = 50;
-
-        /// <summary>
-        /// Charachters (Capsule Colliders) radius.
-        /// </summary>
-        private float m_radius = 0.35f;
-
-        /// <summary>
-        /// Charachters (Capsule Colliders) height.
-        /// Used for standing after crouching.
-        /// </summary>
-        private float m_height = 1.75f;
-
-        /// <summary>
-        /// Maximum angle for standable slope.
-        /// <see cref="StickToSlope(Vector3)"/>
-        /// </summary>
-        private float m_maxSlopeAngle = 45f;
+        [SerializeField]
+        private FirsPersonPreset m_settings;
 
         /// <summary>
         /// Is charachter currently running.
@@ -184,8 +148,8 @@ namespace FPController
         {
             //Cache and reset required components.
 
-            this.name = "Player";
-            this.tag = "Player";
+            this.name = Settings.Name;
+            this.tag = Settings.Tag;
 
             m_rigidbody = GetComponent<Rigidbody>();
             m_rigidbody.freezeRotation = true;
@@ -199,15 +163,15 @@ namespace FPController
             };
 
             m_collider = GetComponent<CapsuleCollider>();
-            m_collider.radius = m_radius;
+            m_collider.radius = Settings.Radius;
             m_collider.material = m_physicMaterial;
-            ChangeHeight(m_height);
+            ChangeHeight(Settings.Height);
 
             m_camera = GetComponentInChildren<Camera>();
             m_camera.fieldOfView = 70;
             m_camera.nearClipPlane = 0.01f;
             m_camera.farClipPlane = 250f;
-            m_camera.transform.localPosition = Vector3.up * (m_height - 0.1f);
+            m_camera.transform.localPosition = Vector3.up * (Settings.Height - 0.1f);
             m_camera.name = string.Format("{0} {1}", this.name, "Camera");
         }
 
@@ -232,7 +196,7 @@ namespace FPController
         /// <param name="_vertical">Vertical Input.</param>
         public void MouseMove(float _horizontal, float _vertical)
         {
-            MouseMove(new Vector2(_horizontal * m_lookSpeed, _vertical * m_lookSpeed));
+            MouseMove(new Vector2(_horizontal, _vertical));
         }
 
         /// <summary>
@@ -243,8 +207,8 @@ namespace FPController
         {
             if(CanCrouch)
             {
-                ChangeHeight(m_height / 2);
-                m_targetSpeed = m_walkSpeed * m_crouchMultiplier;
+                ChangeHeight(Settings.Height / 2);
+                m_targetSpeed = Settings.WalkSpeed * Settings.CrouchMultiplier;
                 m_crouching = true;
             }
         }
@@ -257,8 +221,8 @@ namespace FPController
         {
             if(m_crouching)
             {
-                ChangeHeight(m_height);
-                m_targetSpeed = m_walkSpeed;
+                ChangeHeight(Settings.Height);
+                m_targetSpeed = Settings.WalkSpeed;
                 m_crouching = false;
             }
         }
@@ -271,7 +235,7 @@ namespace FPController
         {
             if(CanRun)
             {
-                m_targetSpeed = m_walkSpeed * m_runMultiplier;
+                m_targetSpeed = Settings.WalkSpeed * Settings.RunMultiplier;
                 m_running = true;
             }
         }
@@ -285,7 +249,7 @@ namespace FPController
             if(m_running)
             {
                 m_running = false;
-                m_targetSpeed = m_walkSpeed;
+                m_targetSpeed = Settings.WalkSpeed;
             }
         }
 
@@ -298,7 +262,7 @@ namespace FPController
         {
             if(Grounded)
             {
-                m_rigidbody.AddForce(0, m_jumpForce, 0, ForceMode.Impulse);
+                m_rigidbody.AddForce(0, Settings.JumpForce, 0, ForceMode.Impulse);
             }
         }
 
@@ -316,7 +280,7 @@ namespace FPController
         private void UpdateCamera()
         {
             //Check distance between body and camera.
-            if(Vector3.Distance(transform.position, m_camera.transform.position) > m_height * 2)
+            if(Vector3.Distance(transform.position, m_camera.transform.position) > Settings.Height * 2)
             {
                 SetCamera();
             }
@@ -417,7 +381,7 @@ namespace FPController
                 return;
             }
 
-            if(SurfaceAngle <= m_maxSlopeAngle)
+            if(SurfaceAngle <= Settings.MaxSlopeAngle)
             {
                 if(_input == Vector3.zero)
                 {
@@ -442,7 +406,7 @@ namespace FPController
             m_cameraRotation = new Vector3(m_cameraRotation.x, transform.rotation.eulerAngles.y, transform.eulerAngles.z);
             m_camera.transform.eulerAngles = m_cameraRotation;
         }
-        
+
         /// <summary>
         /// Changes charachters height to given height.
         /// </summary>
@@ -469,6 +433,28 @@ namespace FPController
          */
 
         /// <summary>
+        /// Can charachter run.
+        /// </summary>
+        private bool CanRun
+        {
+            get
+            {
+                return (!m_crouching);
+            }
+        }
+
+        /// <summary>
+        /// Can charachter crouch.
+        /// </summary>
+        public bool CanCrouch
+        {
+            get
+            {
+                return (!m_running);
+            }
+        }
+
+        /// <summary>
         /// Camera offset.
         /// Cameras local position in global position.
         /// </summary>
@@ -488,8 +474,8 @@ namespace FPController
             get
             {
                 var hit = new RaycastHit();
-                var start = new Vector3(transform.position.x, transform.position.y + (m_radius * 1.1f), transform.position.z);
-                return Physics.SphereCast(start, m_radius, Vector3.down, out hit, 0.05f);
+                var start = new Vector3(transform.position.x, transform.position.y + (Settings.Radius * 1.1f), transform.position.z);
+                return Physics.SphereCast(start, Settings.Radius, Vector3.down, out hit, 0.05f);
             }
         }
 
@@ -502,8 +488,8 @@ namespace FPController
             {
                 var angle = 0f;
                 var hit = new RaycastHit();
-                var start = new Vector3(transform.position.x, transform.position.y + (m_radius * 1.1f), transform.position.z);
-                if(Physics.SphereCast(start, m_radius, Vector3.down, out hit, 0.05f))
+                var start = new Vector3(transform.position.x, transform.position.y + (Settings.Radius * 1.1f), transform.position.z);
+                if(Physics.SphereCast(start, Settings.Radius, Vector3.down, out hit, 0.05f))
                 {
                     angle = Vector3.Angle(Vector3.up, hit.normal);
                 }
@@ -511,25 +497,11 @@ namespace FPController
             }
         }
 
-        /// <summary>
-        /// Can charachter run.
-        /// </summary>
-        private bool CanRun
+        private FirsPersonPreset Settings
         {
             get
             {
-                return (!m_crouching);
-            }
-        }
-
-        /// <summary>
-        /// Can charachter crouch.
-        /// </summary>
-        public bool CanCrouch
-        {
-            get
-            {
-                return (!m_running);
+                return m_settings ?? (m_settings = new FirsPersonPreset());
             }
         }
     }
