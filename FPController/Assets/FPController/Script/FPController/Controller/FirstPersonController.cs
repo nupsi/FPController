@@ -175,6 +175,38 @@ namespace FPController
             m_camera.name = string.Format("{0} {1}", this.name, "Camera");
         }
 
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            if(UnityEditor.EditorApplication.isPlaying)
+            {
+                var radius = 0.05f;
+                var root = transform.position;
+                var top = root + Vector3.up * Settings.Height;
+                var cam = m_targetPosition;
+                Gizmos.color = Color.green;
+                Gizmos.DrawWireSphere(root, radius);
+                Gizmos.DrawWireSphere(top, radius);
+                Gizmos.DrawLine(root, top);
+
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawWireCube(CameraOffset, Vector3.one * radius);
+                Gizmos.DrawLine(CameraOffset, m_camera.transform.position);
+
+                Gizmos.color = Color.blue;
+                Gizmos.DrawWireSphere(cam, radius);
+                Gizmos.DrawLine(cam, m_camera.transform.position);
+                Gizmos.DrawWireCube(m_camera.transform.position, (Vector3.one * radius) * 0.9f);
+
+                Gizmos.color = Color.red;
+                var velocity = m_rigidbody.velocity * 0.2f;
+                var target = m_targetPosition + velocity;
+                Gizmos.DrawWireSphere(target, radius);
+                Gizmos.DrawLine(target, m_camera.transform.position);
+            }
+        }
+#endif
+
         /*
          * Public Functions.
          */
@@ -501,7 +533,7 @@ namespace FPController
         {
             get
             {
-                return m_settings ?? (m_settings = new FirsPersonPreset());
+                return m_settings ?? (m_settings = ScriptableObject.CreateInstance<FirsPersonPreset>());
             }
         }
     }

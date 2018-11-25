@@ -41,6 +41,7 @@ GameObject:
   - component: {fileID: 54314764459279910}
   - component: {fileID: 114394190130975010}
   - component: {fileID: 114503150719509136}
+  - component: {fileID: 114019566076861994}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -68,7 +69,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1983850556202874}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.25609064, y: 0.12681675, z: -0.34485865}
+  m_LocalPosition: {x: 0.91, y: 0.12681675, z: -0.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4328967385791712}
@@ -133,6 +134,17 @@ AudioListener:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1247078563297894}
   m_Enabled: 1
+--- !u!114 &114019566076861994
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1983850556202874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81921b70eded16f4caf3fbae7b93da9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114394190130975010
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -141,10 +153,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1983850556202874}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2279d709e89f0d4889decf13dd2bd04, type: 3}
+  m_Script: {fileID: 11500000, guid: f5e584cb2470c9b46b6a5e8f08cc5ed5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_settings: {fileID: 11400000, guid: 095dcbc57005dfd42937687cc99d4eb2, type: 2}
+  m_settings: {fileID: 11400000, guid: 941f5e6403e3aa446ac2d83b7c69cf13, type: 2}
 --- !u!114 &114503150719509136
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -153,7 +165,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1983850556202874}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cfdb8e8eca29ea3408574342ef6d262c, type: 3}
+  m_Script: {fileID: 11500000, guid: c0d36e4c408b9ff45ba67a8961885db4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!124 &124911961484931356
