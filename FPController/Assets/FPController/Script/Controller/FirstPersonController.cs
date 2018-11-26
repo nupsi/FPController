@@ -487,6 +487,22 @@ namespace FPController
         }
 
         /// <summary>
+        /// First person controller settings.
+        /// </summary>
+        public FirsPersonPreset Settings
+        {
+            get
+            {
+                return m_settings ?? (m_settings = ScriptableObject.CreateInstance<FirsPersonPreset>());
+            }
+
+            set
+            {
+                m_settings = value;
+            }
+        }
+
+        /// <summary>
         /// Camera offset.
         /// Cameras local position in global position.
         /// </summary>
@@ -526,14 +542,6 @@ namespace FPController
                     angle = Vector3.Angle(Vector3.up, hit.normal);
                 }
                 return Mathf.Round(angle);
-            }
-        }
-
-        private FirsPersonPreset Settings
-        {
-            get
-            {
-                return m_settings ?? (m_settings = ScriptableObject.CreateInstance<FirsPersonPreset>());
             }
         }
     }
