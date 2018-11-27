@@ -5,7 +5,7 @@ namespace FPController
     /// <summary>
     /// First Person Controller using Rigidbody for movement.
     /// Call Move(h, v) and MouseMove(h, v) to apply movement.
-    /// Other movement functions: CrouchDown(), CrouchUp(), StartRunning() and StopRunning().
+    /// Other movement functions: Jump(), CrouchDown(), CrouchUp(), StartRunning() and StopRunning().
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(CapsuleCollider))]
@@ -16,7 +16,7 @@ namespace FPController
          */
 
         /// <summary>
-        /// Charachters Capsule Collider component.
+        /// Controllers Capsule Collider component.
         /// Cached for changing Physics Material and height.
         /// <see cref="ChangeHeight(float)"/>
         /// <see cref="ChangeFriction(float, PhysicMaterialCombine)"/>
@@ -33,7 +33,7 @@ namespace FPController
         private PhysicMaterial m_physicMaterial;
 
         /// <summary>
-        /// Charachters Rigidbody component.
+        /// Controllers Rigidbody component.
         /// Used for applying movement.
         /// <see cref="Move(float, float)"/>
         /// <see cref="Move(Vector3)"/>
@@ -63,15 +63,16 @@ namespace FPController
         private Vector3 m_previousForce;
 
         /// <summary>
-        /// Previous force added in local space while grounded during Move().
+        /// Previous force added in local space to Rigidbody while grounded during Move().
+        /// Used for calculating movement during air time.
         /// <see cref="Move(Vector3)"/>
         /// </summary>
         private Vector3 m_lastGround;
 
         /// <summary>
         /// Target position for camera.
-        /// Expected position for camera based on rigidbodys position and velocity.
-        /// Camera is lerped to this position to achieve smooth movement.
+        /// Expected position for camera based on rigidbodys position and velocity (Updated on FixedUpdate).
+        /// Camera is moved towards this position to achieve smooth movement (Moved on Update).
         /// </summary>
         private Vector3 m_targetPosition;
 
@@ -108,6 +109,7 @@ namespace FPController
 
         private void Awake()
         {
+            //Time.timeScale = 0.2f;
             Reset();
             //Clear cameras parent.
             //Camera is cached during Reset().
@@ -126,7 +128,7 @@ namespace FPController
         {
             if(m_camera != null)
             {
-                //Deactive camera with charachter.
+                //Deactive camera with controller.
                 //NOTE: Cameras parent is cleared in Awake().
                 m_camera.gameObject.SetActive(false);
             }
@@ -136,7 +138,7 @@ namespace FPController
         {
             if(m_camera != null)
             {
-                //Active camera with charachter.
+                //Active camera with controller.
                 //NOTE: Cameras parent is cleared in Awake().
                 m_camera.gameObject.SetActive(true);
                 //Update cameras position after it's activated.
@@ -176,6 +178,8 @@ namespace FPController
         }
 
 #if UNITY_EDITOR
+        private Vector3 debug_previousPosition;
+
         private void OnDrawGizmos()
         {
             if(UnityEditor.EditorApplication.isPlaying)
@@ -203,8 +207,69 @@ namespace FPController
                 var target = m_targetPosition + velocity;
                 Gizmos.DrawWireSphere(target, radius);
                 Gizmos.DrawLine(target, m_camera.transform.position);
+
+                Debug.DrawLine(transform.position, debug_previousPosition, Color.blue, 2f);
+                debug_previousPosition = transform.position;
+
+                //Prevent slope movement debug.
+                return;
+
+                //Movement prediction
+                if(m_rigidbody.velocity.magnitude == 0)
+                    return;
+
+                var start = transform.position + Vector3.up * Settings.Radius;
+                var direction = m_rigidbody.velocity.normalized;
+                var fwd = start + (direction * Settings.Radius);
+                var dw1 = start + (direction * Settings.Radius * 0.5f);
+                var dw2 = (start + (direction * (Settings.Radius * 1)));
+                Gizmos.color = Color.blue;
+                var hit = new RaycastHit();
+                var c = Vector3.zero;
+                var ca = 0f;
+                if(Physics.Raycast(start, Vector3.down, out hit, 0.5f))
+                {
+                    c = hit.point;
+                    ca = Vector3.Angle(Vector3.up, hit.normal);
+                    Gizmos.DrawWireSphere(c, radius);
+                    Gizmos.DrawLine(transform.position, c);
+
+                    /*
+                     * Rest of the raycasts if controller close to ground.
+                     */
+
+                    var n = Vector3.zero;
+                    var f = Vector3.zero;
+                    var na = 0f;
+                    var fa = 0f;
+
+                    if(Physics.Raycast(dw1, Vector3.down, out hit))
+                    {
+                        n = hit.point;
+                        na = Vector3.Angle(Vector3.up, hit.normal);
+                        Gizmos.DrawLine(c, n);
+                        Gizmos.DrawWireSphere(n, radius);
+                        Gizmos.DrawLine(transform.position, n);
+                    }
+
+                    Gizmos.color = Color.cyan;
+                    if(Physics.Raycast(dw2, Vector3.down, out hit))
+                    {
+                        f = hit.point;
+                        fa = Vector3.Angle(Vector3.up, hit.normal);
+                        Gizmos.DrawLine(n, f);
+                        Gizmos.DrawWireSphere(f, radius);
+                        Gizmos.DrawLine(transform.position, f);
+                    }
+
+                    var gd = Mathf.Round(Vector3.Distance(transform.position, c) * 100f) / 100f;
+                    UnityEditor.Handles.Label(n - (n - f), "Yd: " + (n.y - f.y) + "\nSA: " + fa);
+                    UnityEditor.Handles.Label(c - (c - n), "Yd: " + (c.y - n.y) + "\nSA: " + na);
+                    UnityEditor.Handles.Label(c, "SA: " + ca + "\nd: " + gd);
+                }
             }
         }
+
 #endif
 
         /*
@@ -212,7 +277,7 @@ namespace FPController
          */
 
         /// <summary>
-        /// Move Charachters Rigidbody component with given horizontal and vertical input.
+        /// Move Controllers Rigidbody component with given horizontal and vertical input.
         /// </summary>
         /// <param name="_horizontal">Horizontal Input.</param>
         /// <param name="_vertical">Vertical Input.</param>
@@ -294,7 +359,7 @@ namespace FPController
         {
             if(Grounded)
             {
-                m_rigidbody.AddForce(0, Settings.JumpForce, 0, ForceMode.Impulse);
+                m_rigidbody.AddForce(0, Settings.JumpForce, 0, ForceMode.VelocityChange);
             }
         }
 
@@ -369,17 +434,18 @@ namespace FPController
                 force = transform.TransformDirection(force);
             }
 
-            //Store current velocity.
+            //Store rigidbodys current velocity.
             var velocity = m_rigidbody.velocity;
             //Calculate change between current and target velocity.
             var change = force - velocity;
+            //Y velocity should be controller by jump and gravity.
             change.y = 0;
             //Add missing force to rigidbody.
             m_rigidbody.AddForce(change, ForceMode.Impulse);
 
             //Clamp velocity to limit max speed.
             ClampVelocity();
-            //Update Capsule Colliders friction to allow/prevent sliding against surfaces.
+            //Update Capsule Colliders friction to allow/prevent sliding along surfaces.
             StickToSlope(_input);
 
             //Store previous force.
@@ -403,13 +469,14 @@ namespace FPController
 
         /// <summary>
         /// Changes Physics Materials fricting based on the ground angle.
+        /// Input is required to prevent high friction during movement.
         /// </summary>
-        /// <param name="_input"></param>
+        /// <param name="_input">Input for movement.</param>
         private void StickToSlope(Vector3 _input)
         {
             if(!Grounded)
             {
-                ChangeFriction(0, PhysicMaterialCombine.Minimum);
+                ZeroFriction();
                 return;
             }
 
@@ -417,11 +484,11 @@ namespace FPController
             {
                 if(_input == Vector3.zero)
                 {
-                    ChangeFriction(20, PhysicMaterialCombine.Maximum);
+                    MaxFriction(20f);
                     return;
                 }
             }
-            ChangeFriction(0, PhysicMaterialCombine.Minimum);
+            ZeroFriction();
         }
 
         /// <summary>
@@ -440,7 +507,7 @@ namespace FPController
         }
 
         /// <summary>
-        /// Changes charachters height to given height.
+        /// Changes Controllers height to given height.
         /// </summary>
         /// <param name="_height">New height.</param>
         private void ChangeHeight(float _height)
@@ -458,6 +525,22 @@ namespace FPController
         {
             m_physicMaterial.frictionCombine = _combine;
             m_physicMaterial.staticFriction = _ammount;
+        }
+
+        /// <summary>
+        /// Changes Physic Materials Static friction to zero.
+        /// </summary>
+        private void ZeroFriction()
+        {
+            ChangeFriction(0, PhysicMaterialCombine.Minimum);
+        }
+
+        /// <summary>
+        /// Changes Physic Materials Static friction to given ammount.
+        /// </summary>
+        private void MaxFriction(float _ammount)
+        {
+            ChangeFriction(_ammount, PhysicMaterialCombine.Maximum);
         }
 
         /*

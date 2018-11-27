@@ -37,7 +37,7 @@ namespace FPController
         /// <summary>
         /// Force added to make rigidbody jump.
         /// </summary>
-        public float JumpForce = 50f;
+        public float JumpForce = 5f;
 
         /// <summary>
         /// Charachters (Capsule Colliders) radius.
