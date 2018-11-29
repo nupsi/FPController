@@ -103,6 +103,11 @@ namespace FPController
         /// </summary>
         private bool m_crouching = false;
 
+        /// <summary>
+        /// Is there request to stand up after crouching.
+        /// </summary>
+        private bool m_requestingStandUp = false;
+
         /*
          * MonoBehaviour Functions.
          */
@@ -122,6 +127,12 @@ namespace FPController
         {
             //Update camera on each frame to lerp it to its target position.
             UpdateCamera();
+        }
+
+        private void FixedUpdate()
+        {
+            //Check if standing up is requested and possible.
+            StandUp();
         }
 
         private void OnDisable()
@@ -186,7 +197,7 @@ namespace FPController
             {
                 var radius = 0.05f;
                 var root = transform.position;
-                var top = root + Vector3.up * Settings.Height;
+                var top = root + Vector3.up * m_collider.height;
                 var cam = m_targetPosition;
                 Gizmos.color = Color.green;
                 Gizmos.DrawWireSphere(root, radius);
@@ -210,63 +221,6 @@ namespace FPController
 
                 Debug.DrawLine(transform.position, debug_previousPosition, Color.blue, 2f);
                 debug_previousPosition = transform.position;
-
-                //Prevent slope movement debug.
-                return;
-
-                //Movement prediction
-                if(m_rigidbody.velocity.magnitude == 0)
-                    return;
-
-                var start = transform.position + Vector3.up * Settings.Radius;
-                var direction = m_rigidbody.velocity.normalized;
-                var fwd = start + (direction * Settings.Radius);
-                var dw1 = start + (direction * Settings.Radius * 0.5f);
-                var dw2 = (start + (direction * (Settings.Radius * 1)));
-                Gizmos.color = Color.blue;
-                var hit = new RaycastHit();
-                var c = Vector3.zero;
-                var ca = 0f;
-                if(Physics.Raycast(start, Vector3.down, out hit, 0.5f))
-                {
-                    c = hit.point;
-                    ca = Vector3.Angle(Vector3.up, hit.normal);
-                    Gizmos.DrawWireSphere(c, radius);
-                    Gizmos.DrawLine(transform.position, c);
-
-                    /*
-                     * Rest of the raycasts if controller close to ground.
-                     */
-
-                    var n = Vector3.zero;
-                    var f = Vector3.zero;
-                    var na = 0f;
-                    var fa = 0f;
-
-                    if(Physics.Raycast(dw1, Vector3.down, out hit))
-                    {
-                        n = hit.point;
-                        na = Vector3.Angle(Vector3.up, hit.normal);
-                        Gizmos.DrawLine(c, n);
-                        Gizmos.DrawWireSphere(n, radius);
-                        Gizmos.DrawLine(transform.position, n);
-                    }
-
-                    Gizmos.color = Color.cyan;
-                    if(Physics.Raycast(dw2, Vector3.down, out hit))
-                    {
-                        f = hit.point;
-                        fa = Vector3.Angle(Vector3.up, hit.normal);
-                        Gizmos.DrawLine(n, f);
-                        Gizmos.DrawWireSphere(f, radius);
-                        Gizmos.DrawLine(transform.position, f);
-                    }
-
-                    var gd = Mathf.Round(Vector3.Distance(transform.position, c) * 100f) / 100f;
-                    UnityEditor.Handles.Label(n - (n - f), "Yd: " + (n.y - f.y) + "\nSA: " + fa);
-                    UnityEditor.Handles.Label(c - (c - n), "Yd: " + (c.y - n.y) + "\nSA: " + na);
-                    UnityEditor.Handles.Label(c, "SA: " + ca + "\nd: " + gd);
-                }
             }
         }
 
@@ -307,6 +261,7 @@ namespace FPController
                 ChangeHeight(Settings.Height / 2);
                 m_targetSpeed = Settings.WalkSpeed * Settings.CrouchMultiplier;
                 m_crouching = true;
+                m_requestingStandUp = false;
             }
         }
 
@@ -318,9 +273,9 @@ namespace FPController
         {
             if(m_crouching)
             {
-                ChangeHeight(Settings.Height);
-                m_targetSpeed = Settings.WalkSpeed;
-                m_crouching = false;
+                //Set Request for standing up.
+                //StandUp() will check if standing up is possible.
+                m_requestingStandUp = true;
             }
         }
 
@@ -480,7 +435,7 @@ namespace FPController
                 return;
             }
 
-            if(SurfaceAngle <= Settings.MaxSlopeAngle)
+            if(SurfaceAngle > 0 && SurfaceAngle <= Settings.MaxSlopeAngle)
             {
                 if(_input == Vector3.zero)
                 {
@@ -514,6 +469,23 @@ namespace FPController
         {
             m_collider.height = _height;
             m_collider.center = Vector3.up * (m_collider.height / 2);
+        }
+
+        /// <summary>
+        /// Tries to stand up if requested and possible.
+        /// </summary>
+        private void StandUp()
+        {
+            if(m_requestingStandUp)
+            {
+                if(CanStandUp)
+                {
+                    ChangeHeight(Settings.Height);
+                    m_targetSpeed = Settings.WalkSpeed;
+                    m_crouching = false;
+                    m_requestingStandUp = false;
+                }
+            }
         }
 
         /// <summary>
@@ -605,8 +577,7 @@ namespace FPController
             get
             {
                 var hit = new RaycastHit();
-                var start = new Vector3(transform.position.x, transform.position.y + (Settings.Radius * 1.1f), transform.position.z);
-                return Physics.SphereCast(start, Settings.Radius, Vector3.down, out hit, 0.05f);
+                return Physics.SphereCast(GroundSphereCenter, Settings.Radius, Vector3.down, out hit, 0.05f);
             }
         }
 
@@ -619,12 +590,39 @@ namespace FPController
             {
                 var angle = 0f;
                 var hit = new RaycastHit();
-                var start = new Vector3(transform.position.x, transform.position.y + (Settings.Radius * 1.1f), transform.position.z);
-                if(Physics.SphereCast(start, Settings.Radius, Vector3.down, out hit, 0.05f))
+                if(Physics.SphereCast(GroundSphereCenter, Settings.Radius, Vector3.down, out hit, 0.05f))
                 {
                     angle = Vector3.Angle(Vector3.up, hit.normal);
                 }
                 return Mathf.Round(angle);
+            }
+        }
+
+        /// <summary>
+        /// Can Controller stand up from crouching.
+        /// </summary>
+        private bool CanStandUp
+        {
+            get
+            {
+                if(m_crouching)
+                {
+                    var hit = new RaycastHit();
+                    return !Physics.SphereCast(GroundSphereCenter, Settings.Radius, Vector3.up, out hit, Settings.Height);
+                }
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Center of the bottom 'sphere' of capsule collider.
+        /// Note: In reality 0.1 times upper than real center.
+        /// </summary>
+        private Vector3 GroundSphereCenter
+        {
+            get
+            {
+                return new Vector3(transform.position.x, transform.position.y + (Settings.Radius * 1.1f), transform.position.z);
             }
         }
     }
