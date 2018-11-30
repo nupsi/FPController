@@ -54,6 +54,10 @@ namespace FPController
                 {
                     inputEvent.KeyDown();
                 }
+                else if(Input.GetKey(inputEvent.KeyCode))
+                {
+                    inputEvent.Key();
+                }
                 else if(Input.GetKeyUp(inputEvent.KeyCode))
                 {
                     inputEvent.KeyUp();
