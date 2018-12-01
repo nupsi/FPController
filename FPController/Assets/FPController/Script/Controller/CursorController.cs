@@ -32,6 +32,13 @@ namespace Mouse
             }
         }
 
+#if UNITY_EDITOR
+        private void OnGUI()
+        {
+            GUI.Label(new Rect(10, 10, 300, 60), "Hide Cursor: Left Click\nShow Cursor: Esc");
+        }
+#endif
+
         /// <summary>
         /// Changes cursors visibility to given state.
         /// </summary>
