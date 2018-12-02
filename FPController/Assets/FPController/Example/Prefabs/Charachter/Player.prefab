@@ -22,8 +22,8 @@ GameObject:
   - component: {fileID: 136037411864350790}
   - component: {fileID: 54082968621076236}
   - component: {fileID: 114455309821604572}
-  - component: {fileID: 114235894287261164}
-  - component: {fileID: 114915235759262830}
+  - component: {fileID: 114641373253425866}
+  - component: {fileID: 114750395930966476}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -134,17 +134,6 @@ AudioListener:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1947585306375218}
   m_Enabled: 1
---- !u!114 &114235894287261164
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1692242549321862}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0d36e4c408b9ff45ba67a8961885db4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114455309821604572
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -157,7 +146,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_settings: {fileID: 11400000, guid: 922c423449351b447b21ffee20e5e777, type: 2}
---- !u!114 &114915235759262830
+--- !u!114 &114641373253425866
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -165,7 +154,129 @@ MonoBehaviour:
   m_GameObject: {fileID: 1692242549321862}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 81921b70eded16f4caf3fbae7b93da9c, type: 3}
+  m_Script: {fileID: 11500000, guid: a9c3d3f74dc4a1f4e975d1e8c08168ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_manager: {fileID: 0}
+  m_events:
+  - Name: Jump
+    KeyCode: 32
+    CombinationKeyCode: 0
+    GetKeyDown:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 114455309821604572}
+          m_MethodName: Jump
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: FPController.InputEvent+CustomEvent, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+    GetKey:
+      m_PersistentCalls:
+        m_Calls: []
+      m_TypeName: FPController.InputEvent+CustomEvent, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+    GetKeyUp:
+      m_PersistentCalls:
+        m_Calls: []
+      m_TypeName: FPController.InputEvent+CustomEvent, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+  - Name: Crouch
+    KeyCode: 306
+    CombinationKeyCode: 0
+    GetKeyDown:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 114455309821604572}
+          m_MethodName: CrouchDown
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: FPController.InputEvent+CustomEvent, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+    GetKey:
+      m_PersistentCalls:
+        m_Calls: []
+      m_TypeName: FPController.InputEvent+CustomEvent, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+    GetKeyUp:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 114455309821604572}
+          m_MethodName: CrouchUp
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: FPController.InputEvent+CustomEvent, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+  - Name: Run
+    KeyCode: 304
+    CombinationKeyCode: 0
+    GetKeyDown:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 114455309821604572}
+          m_MethodName: StartRunning
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: FPController.InputEvent+CustomEvent, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+    GetKey:
+      m_PersistentCalls:
+        m_Calls: []
+      m_TypeName: FPController.InputEvent+CustomEvent, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+    GetKeyUp:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 114455309821604572}
+          m_MethodName: StopRunning
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: FPController.InputEvent+CustomEvent, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+--- !u!114 &114750395930966476
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1692242549321862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83c4c9ef540f9f2458e7f98090482978, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!124 &124084972079982230

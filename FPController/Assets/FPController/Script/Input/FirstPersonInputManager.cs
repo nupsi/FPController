@@ -5,58 +5,20 @@ namespace FPController
     [RequireComponent(typeof(FirstPersonController))]
     public class FirstPersonInputManager : MonoBehaviour
     {
-        /*
-         * Variables.
-         */
-
         private FirstPersonController m_controller;
-        private KeyCode m_jumpKey = KeyCode.Space;
-        private KeyCode m_crouchKey = KeyCode.LeftControl;
-        private KeyCode m_runKey = KeyCode.LeftShift;
-        private InputAction[] m_events;
         private float m_lookSpeed = 2;
-
-        /*
-         * MonoBehaviour Functions.
-         */
 
         private void Awake()
         {
             m_controller = GetComponent<FirstPersonController>();
-            m_events = new InputAction[]
-            {
-                new InputAction(m_jumpKey, m_controller.Jump, null),
-                new InputAction(m_crouchKey, m_controller.CrouchDown, m_controller.CrouchUp),
-                new InputAction(m_runKey, m_controller.StartRunning, m_controller.StopRunning)
-            };
         }
 
         private void Update()
         {
-            UpdateInput();
+            m_controller.MouseMove(MouseHorizontal, MouseVertical);
         }
 
         private void FixedUpdate()
-        {
-            FixedUpdateInput();
-        }
-
-        /*
-         * Private Functions.
-         */
-
-        private void UpdateInput()
-        {
-            m_controller.MouseMove(MouseHorizontal, MouseVertical);
-            foreach(var inputEvent in m_events)
-            {
-                inputEvent.KeyDown();
-                inputEvent.Key();
-                inputEvent.KeyUp();
-            }
-        }
-
-        private void FixedUpdateInput()
         {
             m_controller.Move(Horizontal, Vertical);
         }

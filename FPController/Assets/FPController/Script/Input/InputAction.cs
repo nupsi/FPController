@@ -24,9 +24,9 @@ namespace FPController
     /// {
     ///     foreach(var action in actions)
     ///     {
-    ///         action.KeyDown();
-    ///         action.Key();
-    ///         action.KeyUp();
+    ///         action.GetKeyDown();
+    ///         action.GetKey();
+    ///         action.GetKeyUp();
     ///     }
     /// }
     /// </code>
@@ -67,33 +67,33 @@ namespace FPController
             m_combinationKey = _combination;
         }
 
-        public void KeyDown()
+        public void GetKeyDown()
         {
-            if(Input.GetKeyDown(KeyCode))
+            if(m_keyDownEvent != null)
             {
-                if(m_keyDownEvent != null && CombinationKeyDown)
+                if(Input.GetKeyDown(KeyCode) && CombinationKeyDown)
                 {
                     m_keyDownEvent();
                 }
             }
         }
 
-        public void Key()
+        public void GetKey()
         {
-            if(Input.GetKey(KeyCode))
+            if(m_keyEvent != null)
             {
-                if(m_keyEvent != null && CombinationKeyDown)
+                if(Input.GetKey(KeyCode) && CombinationKeyDown)
                 {
                     m_keyEvent();
                 }
             }
         }
 
-        public void KeyUp()
+        public void GetKeyUp()
         {
-            if(Input.GetKeyUp(KeyCode))
+            if(m_keyUpEvent != null)
             {
-                if(m_keyUpEvent != null)
+                if(Input.GetKeyUp(KeyCode))
                 {
                     m_keyUpEvent();
                 }
