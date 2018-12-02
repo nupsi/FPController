@@ -6,29 +6,31 @@ namespace FPController
     /// <summary>
     /// Stores key code(s) and reference(s) to function(s).
     /// Allows simple way to check if key is used and call stored function.
-    /// <example>
-    /// //Define array of differend action.
-    /// var actions = InputAction[] 
-    /// { 
-    ///     //Create input action for jump.
-    ///     //controller.Jump() gets called when actions[0].KeyDown() is called.
-    ///     new InputAction(KeyCode.Space, controller.Jump, null)
-    /// };
-    /// ...
-    /// //Loop through the array of actions.
-    /// foreach(var action in actions)
-    /// {
-    ///     //Check if key is down for current action.
-    ///     if(Input.GetKeyDown(action.KeyCode))
-    ///     {
-    ///         //Call action.KeyDown() to execute function referenced by input action.
-    ///         //For this example this would call controller.Jump() when space is pressed.
-    ///         action.KeyDown();
-    ///     }
-    ///     //Check if pressed and up.
-    /// }
-    /// </example>
     /// </summary>
+    /// <example>
+    /// Example of using Input action to make a controller jump.
+    /// <code>
+    /// private InputAction[] actions;
+    ///
+    /// private void Awake()
+    /// {
+    ///     actions = new InputAction[]
+    ///     {
+    ///         new InputAction(KeyCode.Space, controller.Jump, null)
+    ///     };
+    /// }
+    ///
+    /// private void Update()
+    /// {
+    ///     foreach(var action in actions)
+    ///     {
+    ///         action.KeyDown();
+    ///         action.Key();
+    ///         action.KeyUp();
+    ///     }
+    /// }
+    /// </code>
+    /// </example>
     public class InputAction
     {
         /*
@@ -44,16 +46,16 @@ namespace FPController
          * Public Functions.
          */
 
-        public InputAction(KeyCode _key, Action _downEvent, Action _upEvent) 
+        public InputAction(KeyCode _key, Action _downEvent, Action _upEvent)
             : this(_key, _downEvent, _upEvent, KeyCode.None) { }
 
-        public InputAction(KeyCode _key, Action _downEvent, Action _upEvent, KeyCode _combination) 
+        public InputAction(KeyCode _key, Action _downEvent, Action _upEvent, KeyCode _combination)
             : this(_key, _downEvent, null, _upEvent, _combination) { }
 
-        public InputAction(KeyCode _key, Action _event) 
+        public InputAction(KeyCode _key, Action _event)
             : this(_key, _event, KeyCode.None) { }
 
-        public InputAction(KeyCode _key, Action _event, KeyCode _combination) 
+        public InputAction(KeyCode _key, Action _event, KeyCode _combination)
             : this(_key, null, _event, null, _combination) { }
 
         public InputAction(KeyCode _key, Action _downEvent, Action _event, Action _upEvent, KeyCode _combination)
@@ -67,25 +69,34 @@ namespace FPController
 
         public void KeyDown()
         {
-            if(m_keyDownEvent != null && CombinationKeyDown)
+            if(Input.GetKeyDown(KeyCode))
             {
-                m_keyDownEvent();
+                if(m_keyDownEvent != null && CombinationKeyDown)
+                {
+                    m_keyDownEvent();
+                }
             }
         }
 
         public void Key()
         {
-            if(m_keyEvent != null && CombinationKeyDown)
+            if(Input.GetKey(KeyCode))
             {
-                m_keyEvent();
+                if(m_keyEvent != null && CombinationKeyDown)
+                {
+                    m_keyEvent();
+                }
             }
         }
 
         public void KeyUp()
         {
-            if(m_keyUpEvent != null)
+            if(Input.GetKeyUp(KeyCode))
             {
-                m_keyUpEvent();
+                if(m_keyUpEvent != null)
+                {
+                    m_keyUpEvent();
+                }
             }
         }
 

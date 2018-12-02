@@ -50,18 +50,9 @@ namespace FPController
             m_controller.MouseMove(MouseHorizontal, MouseVertical);
             foreach(var inputEvent in m_events)
             {
-                if(Input.GetKeyDown(inputEvent.KeyCode))
-                {
-                    inputEvent.KeyDown();
-                }
-                else if(Input.GetKey(inputEvent.KeyCode))
-                {
-                    inputEvent.Key();
-                }
-                else if(Input.GetKeyUp(inputEvent.KeyCode))
-                {
-                    inputEvent.KeyUp();
-                }
+                inputEvent.KeyDown();
+                inputEvent.Key();
+                inputEvent.KeyUp();
             }
         }
 
