@@ -20,6 +20,9 @@ namespace FPController
             public string Name = "Input Event";
             public KeyCode KeyCode;
             public KeyCode CombinationKeyCode = KeyCode.None;
+            public bool KeyDownEvent = true;
+            public bool KeyEvent = false;
+            public bool KeyUpEvent = true;
             public CustomEvent GetKeyDown;
             public CustomEvent GetKey;
             public CustomEvent GetKeyUp;
@@ -57,12 +60,10 @@ namespace FPController
                 {
                     if(current.KeyCode != KeyCode.None)
                     {
-                        actions.Add(new InputAction(
-                                current.KeyCode, 
-                                current.GetKeyDown.Invoke,
-                                current.GetKey.Invoke,
-                                current.GetKeyUp.Invoke,
-                                current.CombinationKeyCode));
+                        var down = current.KeyDownEvent ? current.GetKeyDown.Invoke : new Action(() => { });
+                        var key = current.KeyEvent ? current.GetKey.Invoke : new Action(() => { });
+                        var up = current.KeyUpEvent ? current.GetKeyUp.Invoke : new Action(() => { });
+                        actions.Add(new InputAction(current.KeyCode, down, key, up, current.CombinationKeyCode));
                     }
                     else
                     {
@@ -70,6 +71,18 @@ namespace FPController
                     }
                 }
                 return actions;
+            }
+        }
+
+        /*
+         * Accessors.
+         */
+
+        public int EventCount
+        {
+            get
+            {
+                return m_events.Count;
             }
         }
     }

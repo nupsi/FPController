@@ -162,6 +162,9 @@ MonoBehaviour:
   - Name: Jump
     KeyCode: 32
     CombinationKeyCode: 0
+    KeyDownEvent: 1
+    KeyEvent: 0
+    KeyUpEvent: 0
     GetKeyDown:
       m_PersistentCalls:
         m_Calls:
@@ -191,6 +194,9 @@ MonoBehaviour:
   - Name: Crouch
     KeyCode: 306
     CombinationKeyCode: 0
+    KeyDownEvent: 1
+    KeyEvent: 0
+    KeyUpEvent: 1
     GetKeyDown:
       m_PersistentCalls:
         m_Calls:
@@ -231,6 +237,9 @@ MonoBehaviour:
   - Name: Run
     KeyCode: 304
     CombinationKeyCode: 0
+    KeyDownEvent: 1
+    KeyEvent: 0
+    KeyUpEvent: 1
     GetKeyDown:
       m_PersistentCalls:
         m_Calls:
