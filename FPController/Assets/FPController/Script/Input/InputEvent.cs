@@ -1,33 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace FPController
 {
     public class InputEvent : MonoBehaviour
     {
-        /*
-         * Custom classes.
-         */
-
-        [Serializable]
-        private class CustomEvent : UnityEvent { }
-
-        [Serializable]
-        private class Event
-        {
-            public string Name = "Input Event";
-            public KeyCode KeyCode;
-            public KeyCode CombinationKeyCode = KeyCode.None;
-            public bool KeyDownEvent = true;
-            public bool KeyEvent = false;
-            public bool KeyUpEvent = true;
-            public CustomEvent GetKeyDown;
-            public CustomEvent GetKey;
-            public CustomEvent GetKeyUp;
-        }
-
         /*
          * Variables.
          */
@@ -36,11 +14,19 @@ namespace FPController
         private InputManager m_manager;
 
         [SerializeField]
-        private List<Event> m_events;
+        private List<InputEventData> m_events;
 
         /*
          * Mono Behaviour Functions.
          */
+
+        private void Awake()
+        {
+            if(m_manager == null)
+            {
+                m_manager = gameObject.AddComponent<InputManager>();
+            }
+        }
 
         private void Start()
         {

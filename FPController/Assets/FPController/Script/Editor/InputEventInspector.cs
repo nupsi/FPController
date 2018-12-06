@@ -9,7 +9,9 @@ namespace FPController.FPEditor
     {
         public float Height;
         public bool Expanded;
+
         public ListItem() : this(EditorGUIUtility.singleLineHeight, false) { }
+
         public ListItem(float _height, bool _expanded)
         {
             Height = _height;
@@ -20,23 +22,20 @@ namespace FPController.FPEditor
     [CustomEditor(typeof(InputEvent))]
     public class InputEventInspector : Editor
     {
-        private static float ListLineHeight;
         private ReorderableList m_list;
         private List<ListItem> m_heights;
 
         private void OnEnable()
         {
-            ListLineHeight = EditorGUIUtility.singleLineHeight * 1.1f;
-
             m_heights = new List<ListItem>();
             for(int i = 0; i < Target.EventCount; i++)
             {
                 m_heights.Add(new ListItem());
             }
 
-            m_list = new ReorderableList(serializedObject, serializedObject.FindProperty("m_events"), true, true, true, true)
+            m_list = new ReorderableList(serializedObject, serializedObject.FindProperty("m_events"), false, true, true, true)
             {
-                elementHeight = EditorGUIUtility.singleLineHeight * 4,
+                elementHeight = EditorGUIUtility.singleLineHeight,
                 drawHeaderCallback = (Rect rect) =>
                 {
                     EditorGUI.LabelField(rect, "Events");
@@ -49,14 +48,31 @@ namespace FPController.FPEditor
                     m_heights[index].Expanded = isActive;
                     if(isActive)
                         DrawListItemContent(rect, index, element);
-                    //EditorGUI.PropertyField(
-                    //    new Rect(rect.x, rect.y, rect.width, EditorGUIUtility.singleLineHeight),
-                    //    element.FindPropertyRelative("KeyCode"), GUIContent.none);
                 },
                 elementHeightCallback = (index) =>
                 {
                     Repaint();
-                    return m_heights[index].Expanded ? m_heights[index].Height : ListLineHeight;
+                    return m_heights[index].Expanded ? m_heights[index].Height : EditorGUIUtility.singleLineHeight;
+                },
+                onAddCallback = (list) =>
+                {
+                    var index = list.serializedProperty.arraySize;
+                    list.serializedProperty.arraySize++;
+                    list.index = index;
+                    var element = list.serializedProperty.GetArrayElementAtIndex(index);
+                    element.FindPropertyRelative("Name").stringValue = "Input Name";
+                    element.FindPropertyRelative("KeyCode").enumValueIndex = 0;
+                    element.FindPropertyRelative("CombinationKeyCode").enumValueIndex = 0;
+                    element.FindPropertyRelative("KeyDownEvent").boolValue = false;
+                    element.FindPropertyRelative("KeyEvent").boolValue = false;
+                    element.FindPropertyRelative("KeyUpEvent").boolValue = false;
+                    //TODO: Reset unity events, currently cloning events from previous event.
+                    m_heights.Add(new ListItem());
+                },
+                onRemoveCallback = (list) =>
+                {
+                    m_heights.RemoveAt(list.index);
+                    list.serializedProperty.DeleteArrayElementAtIndex(list.index);
                 }
             };
         }
@@ -65,66 +81,92 @@ namespace FPController.FPEditor
         {
             var rect = new Rect(_rect.x, _rect.y, _rect.width / 2, EditorGUIUtility.singleLineHeight);
             EditorGUI.LabelField(rect, _element.FindPropertyRelative("Name").stringValue);
-            var main = (KeyCode)_element.FindPropertyRelative("KeyCode").enumValueIndex;
-            var secondary = (KeyCode)_element.FindPropertyRelative("CombinationKeyCode").enumValueIndex;
-            var keyCodeText = string.Format("{0}{1}", secondary != KeyCode.None ? string.Format("{0} + ", secondary) : string.Empty, main);
-            rect.x += (_rect.width / 2);
-            EditorGUI.LabelField(rect, keyCodeText);
+            //var main = (KeyCode)_element.FindPropertyRelative("KeyCode").enumValueIndex;
+            //var secondary = (KeyCode)_element.FindPropertyRelative("CombinationKeyCode").enumValueIndex;
+            //var keyCodeText = string.Format("{0}{1}", secondary != KeyCode.None ? string.Format("{0} + ", secondary) : string.Empty, main);
+            //rect.x += (_rect.width / 2);
+            //EditorGUI.LabelField(rect, keyCodeText);
         }
 
         private void DrawListItemContent(Rect _rect, int _index, SerializedProperty _element)
         {
+            if(_rect.width < 0)
+                return;
+
             var lineHeight = EditorGUIUtility.singleLineHeight * 1.1f;
-            var rect = new Rect(_rect.x, _rect.y + ListLineHeight, _rect.width, lineHeight);
+            var rect = new Rect(_rect.x, _rect.y + lineHeight, _rect.width, lineHeight);
             var singleLine = _rect.width < 600f;
-            var height = singleLine ? lineHeight * 3 : lineHeight * 2;
+            var height = lineHeight * 2;
             EditorGUIUtility.labelWidth = _rect.width / (singleLine ? 2 : 4);
-
             EditorGUI.PropertyField(rect, _element.FindPropertyRelative("Name"), new GUIContent("Event Name"));
+            var properties = new List<SerializedProperty[]>
+            {
+                new SerializedProperty[]
+                {
+                    _element.FindPropertyRelative("KeyCode"),
+                    _element.FindPropertyRelative("CombinationKeyCode"),
+                },
+                new SerializedProperty[]
+                {
+                    _element.FindPropertyRelative("KeyDownEvent"),
+                    _element.FindPropertyRelative("KeyEvent"),
+                    _element.FindPropertyRelative("KeyUpEvent"),
+                }
+            };
 
-            rect.y += lineHeight;
-            rect.width = singleLine ? rect.width : rect.width / 2;
-            EditorGUI.PropertyField(rect, _element.FindPropertyRelative("KeyCode"));
-
-            if(singleLine) rect.y += lineHeight;
-            rect.x = singleLine ? rect.x : rect.x + rect.width;
-            EditorGUI.PropertyField(rect, _element.FindPropertyRelative("CombinationKeyCode"));
+            foreach(var line in properties)
+            {
+                if(!singleLine)
+                {
+                    rect.y += lineHeight;
+                    height += lineHeight;
+                }
+                rect.x = _rect.x;
+                rect.width = singleLine ? _rect.width : _rect.width / line.Length;
+                foreach(var entry in line)
+                {
+                    if(singleLine)
+                    {
+                        rect.y += lineHeight;
+                        height += lineHeight;
+                    }
+                    EditorGUI.PropertyField(rect, entry);
+                    if(!singleLine)
+                    {
+                        rect.x += rect.width;
+                    }
+                }
+            }
 
             rect.x = _rect.x;
-            rect.width = _rect.width / 3;
-            rect.y += lineHeight;
-
-            EditorGUI.PropertyField(rect, _element.FindPropertyRelative("KeyDownEvent"));
-            rect.x += rect.width;
-            EditorGUI.PropertyField(rect, _element.FindPropertyRelative("KeyEvent"));
-            rect.x += rect.width;
-            EditorGUI.PropertyField(rect, _element.FindPropertyRelative("KeyUpEvent"));
-
-
-            rect.x = _rect.x;
-            rect.y += lineHeight;
             rect.width = _rect.width;
-            var eventHeight = 90;
-            var heightAddition = 20;
-            if(_element.FindPropertyRelative("KeyDownEvent").boolValue)
-            {
-                EditorGUI.PropertyField(rect, _element.FindPropertyRelative("GetKeyDown"));
-                height += eventHeight + heightAddition;
-                rect.y += eventHeight;
-            }
+            rect.y += lineHeight;
 
-            if(_element.FindPropertyRelative("KeyEvent").boolValue)
+            var events = new Dictionary<SerializedProperty, bool>
             {
-                EditorGUI.PropertyField(rect, _element.FindPropertyRelative("GetKey"));
-                height += eventHeight + heightAddition;
-                rect.y += eventHeight;
-            }
+                {
+                    _element.FindPropertyRelative("GetKeyDown"),
+                    _element.FindPropertyRelative("KeyDownEvent").boolValue
+                },
+                {
+                    _element.FindPropertyRelative("GetKey"),
+                    _element.FindPropertyRelative("KeyEvent").boolValue
+                },
+                {
+                    _element.FindPropertyRelative("GetKeyUp"),
+                    _element.FindPropertyRelative("KeyUpEvent").boolValue
+                }
+            };
 
-            if(_element.FindPropertyRelative("KeyUpEvent").boolValue)
+            foreach(var entry in events)
             {
-                EditorGUI.PropertyField(rect, _element.FindPropertyRelative("GetKeyUp"));
-                height += eventHeight + heightAddition;
-                rect.y += eventHeight;
+                if(entry.Value)
+                {
+                    EditorGUI.PropertyField(rect, entry.Key);
+                    var addition = EditorGUI.GetPropertyHeight(entry.Key) + 15f;
+                    height += addition;
+                    rect.y += addition;
+                }
             }
 
             m_heights[_index].Height = height;
@@ -132,11 +174,10 @@ namespace FPController.FPEditor
 
         public override void OnInspectorGUI()
         {
-            DrawDefaultInspector();
-            //serializedObject.Update();
-            //EditorGUILayout.PropertyField(serializedObject.FindProperty("m_manager"));
-            //m_list.DoLayoutList();
-            //serializedObject.ApplyModifiedProperties();
+            serializedObject.Update();
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("m_manager"));
+            m_list.DoLayoutList();
+            serializedObject.ApplyModifiedProperties();
         }
 
         private InputEvent Target
