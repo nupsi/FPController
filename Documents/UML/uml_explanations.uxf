@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.2">
+  <zoom_level>18</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>288</x>
+      <y>180</y>
+      <w>90</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>X
+valign=center
+group=1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>360</x>
+      <y>180</y>
+      <w>234</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+Calls
+group=1</panel_attributes>
+    <additional_attributes>110.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>558</x>
+      <y>180</y>
+      <w>90</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>Y
+valign=center
+group=1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>360</x>
+      <y>396</y>
+      <w>234</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;&gt;&gt;&gt;&gt;
+Contains
+group=2</panel_attributes>
+    <additional_attributes>110.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>558</x>
+      <y>396</y>
+      <w>90</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>Y
+valign=center
+group=2</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>288</x>
+      <y>396</y>
+      <w>90</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>X
+valign=center
+group=2</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Text</id>
+    <coordinates>
+      <x>666</x>
+      <y>180</y>
+      <w>594</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>Class X calls function(s) from Class Y
+valign=center
+group=1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Text</id>
+    <coordinates>
+      <x>666</x>
+      <y>396</y>
+      <w>594</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>Class X contains Class Y as variable(s)
+valign=center
+group=2</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>360</x>
+      <y>288</y>
+      <w>234</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+Inherits
+group=3</panel_attributes>
+    <additional_attributes>110.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>558</x>
+      <y>288</y>
+      <w>90</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>Y
+valign=center
+group=3</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Text</id>
+    <coordinates>
+      <x>666</x>
+      <y>288</y>
+      <w>594</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>Class X is inherited from Class Y
+valign=center
+group=3</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>288</x>
+      <y>288</y>
+      <w>90</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>X
+valign=center
+group=3</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

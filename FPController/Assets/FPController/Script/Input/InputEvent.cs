@@ -33,6 +33,11 @@ namespace FPController
             m_manager.Register(Actions);
         }
 
+        private void Reset()
+        {
+            m_events = new List<InputEventData>();
+        }
+
         /*
          * Accessors.
          */
