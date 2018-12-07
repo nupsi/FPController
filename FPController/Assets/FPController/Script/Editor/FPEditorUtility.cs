@@ -1,10 +1,17 @@
 ﻿using UnityEditor;
 
-namespace FPController
+namespace FPController.FPEditor
 {
+    /// <summary>
+    /// Contains helpful functions for firts person controller inspector drawing.
+    /// </summary>
     public static class FPEditorUtility
     {
-        public static void DrawPresetInspector(ref FirsPersonPreset _preset)
+        /// <summary>
+        /// Draw Custom Inspector for Firts Person Preset.
+        /// </summary>
+        /// <param name="_preset">Target preset.</param>
+        public static void DrawPresetInspector(ref FirstPersonPreset _preset)
         {
             EditorGUILayout.LabelField("Controller Settings", EditorStyles.boldLabel);
             _preset.Name = EditorGUILayout.TextField("Name", _preset.Name);

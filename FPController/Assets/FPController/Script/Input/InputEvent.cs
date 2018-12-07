@@ -4,15 +4,25 @@ using UnityEngine;
 
 namespace FPController
 {
+    /// <summary>
+    /// Allows user to bind public functions to key codes inside Unity Editor.
+    /// </summary>
     public class InputEvent : MonoBehaviour
     {
         /*
          * Variables.
          */
 
+        /// <summary>
+        /// Target input manager.
+        /// Event data is converted to input actions and registered here.
+        /// </summary>
         [SerializeField]
         private InputManager m_manager;
 
+        /// <summary>
+        /// List of stored events.
+        /// </summary>
         [SerializeField]
         private List<InputEventData> m_events;
 
@@ -30,6 +40,7 @@ namespace FPController
 
         private void Start()
         {
+            //Register events by converting them into actions.
             m_manager.Register(Actions);
         }
 
@@ -42,6 +53,9 @@ namespace FPController
          * Accessors.
          */
 
+        /// <summary>
+        /// Converst current list of event data into list of actions.
+        /// </summary>
         private List<InputAction> Actions
         {
             get
@@ -65,10 +79,9 @@ namespace FPController
             }
         }
 
-        /*
-         * Accessors.
-         */
-
+        /// <summary>
+        /// How many events are stored.
+        /// </summary>
         public int EventCount
         {
             get

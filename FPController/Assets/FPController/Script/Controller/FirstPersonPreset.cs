@@ -6,7 +6,7 @@ namespace FPController
     /// Preset for First Person Controller.
     /// </summary>
     [CreateAssetMenu(fileName = "FirsPersonPreset", menuName = "FP Preset", order = 1500)]
-    public class FirsPersonPreset : ScriptableObject
+    public class FirstPersonPreset : ScriptableObject
     {
         /// <summary>
         /// Name, set to game object on reset.

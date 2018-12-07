@@ -2,13 +2,31 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace FPController
+namespace FPController.FPEditor
 {
+    /// <summary>
+    /// Custom Editor Window for creating First Person Controller.
+    /// </summary>
     public class FirstPersonCreatorWindow : EditorWindow
     {
+        /// <summary>
+        /// Current window instance.
+        /// </summary>
         private static FirstPersonCreatorWindow m_window;
-        private FirsPersonPreset m_preset;
+
+        /// <summary>
+        /// Temporary preset to store properties during controller creation.
+        /// </summary>
+        private FirstPersonPreset m_preset;
+
+        /// <summary>
+        /// Scrollbar position.
+        /// </summary>
         private Vector2 m_scroll;
+
+        /// <summary>
+        /// Is cursor controller requested.
+        /// </summary>
         private bool m_addCursorController = false;
 
         [MenuItem("Extensions/First Person Controller")]
@@ -108,11 +126,11 @@ namespace FPController
             return camera;
         }
 
-        private FirsPersonPreset Preset
+        private FirstPersonPreset Preset
         {
             get
             {
-                return m_preset ?? (m_preset = CreateInstance<FirsPersonPreset>());
+                return m_preset ?? (m_preset = CreateInstance<FirstPersonPreset>());
             }
         }
     }

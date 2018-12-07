@@ -85,7 +85,7 @@ namespace FPController
         /// Preset for settings used for controller.
         /// </summary>
         [SerializeField]
-        private FirsPersonPreset m_settings;
+        private FirstPersonPreset m_settings;
 
         /// <summary>
         /// Is charachter currently running.
@@ -544,11 +544,11 @@ namespace FPController
         /// <summary>
         /// First person controller settings.
         /// </summary>
-        public FirsPersonPreset Settings
+        public FirstPersonPreset Settings
         {
             get
             {
-                return m_settings ?? (m_settings = ScriptableObject.CreateInstance<FirsPersonPreset>());
+                return m_settings ?? (m_settings = ScriptableObject.CreateInstance<FirstPersonPreset>());
             }
 
             set

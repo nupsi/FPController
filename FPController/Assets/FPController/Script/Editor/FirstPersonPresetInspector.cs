@@ -1,11 +1,17 @@
 ﻿using UnityEditor;
 
-namespace FPController
+namespace FPController.FPEditor
 {
-    [CustomEditor(typeof(FirsPersonPreset))]
+    /// <summary>
+    /// Custom Inspector for First Person Preset.
+    /// </summary>
+    [CustomEditor(typeof(FirstPersonPreset))]
     public class FirstPersonPresetInspector : Editor
     {
-        private FirsPersonPreset m_preset;
+        /// <summary>
+        /// Current preset in inspected object.
+        /// </summary>
+        private FirstPersonPreset m_preset;
 
         private void OnEnable()
         {
@@ -17,11 +23,14 @@ namespace FPController
             FPEditorUtility.DrawPresetInspector(ref m_preset);
         }
 
-        private FirsPersonPreset Target
+        /// <summary>
+        /// Editor target as first person preset.
+        /// </summary>
+        private FirstPersonPreset Target
         {
             get
             {
-                return (FirsPersonPreset)target; 
+                return (FirstPersonPreset)target; 
             }
         }
     }

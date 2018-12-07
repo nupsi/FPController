@@ -1,12 +1,19 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace FPController
+namespace FPController.FPEditor
 {
+    /// <summary>
+    /// Custom inspector for First Person Controller.
+    /// Provide custom inspector for preset.
+    /// </summary>
     [CustomEditor(typeof(FirstPersonController))]
     public class FirstPersonControllerInspector : Editor
     {
-        private FirsPersonPreset m_preset;
+        /// <summary>
+        /// Local copy of controller preset.
+        /// </summary>
+        private FirstPersonPreset m_preset;
 
         private void OnEnable()
         {
@@ -15,8 +22,10 @@ namespace FPController
 
         public override void OnInspectorGUI()
         {
+            //Draw default inspector to display field for preset.
             DrawDefaultInspector();
 
+            //Draw inspector for current preset, if current target has one.
             if(Target.Settings != null)
             {
                 EditorGUILayout.Space();
@@ -29,6 +38,9 @@ namespace FPController
             }
         }
 
+        /// <summary>
+        /// Current target controller.
+        /// </summary>
         private FirstPersonController Target
         {
             get
@@ -37,7 +49,10 @@ namespace FPController
             }
         }
 
-        private FirsPersonPreset Preset
+        /// <summary>
+        /// Current selection preset.
+        /// </summary>
+        private FirstPersonPreset Preset
         {
             get
             {
