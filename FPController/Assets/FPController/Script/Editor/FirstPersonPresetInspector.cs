@@ -30,7 +30,7 @@ namespace FPController.FPEditor
         {
             get
             {
-                return (FirstPersonPreset)target; 
+                return (FirstPersonPreset)target;
             }
         }
     }
