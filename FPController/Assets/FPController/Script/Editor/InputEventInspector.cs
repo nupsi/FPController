@@ -105,12 +105,14 @@ namespace FPController.FPEditor
             var rect = new Rect(_rect.x, _rect.y, _rect.width / 2, EditorGUIUtility.singleLineHeight);
             EditorGUI.LabelField(rect, _element.FindPropertyRelative("Name").stringValue);
             //Draw events key code
-            //Currently doesn't display key code correctly.
-            //var main = (KeyCode)_element.FindPropertyRelative("KeyCode").enumValueIndex;
-            //var secondary = (KeyCode)_element.FindPropertyRelative("CombinationKeyCode").enumValueIndex;
-            //var keyCodeText = string.Format("{0}{1}", secondary != KeyCode.None ? string.Format("{0} + ", secondary) : string.Empty, main);
-            //rect.x += (_rect.width / 2);
-            //EditorGUI.LabelField(rect, keyCodeText);
+            var keyNames = _element.FindPropertyRelative("KeyCode").enumDisplayNames;
+            var main = _element.FindPropertyRelative("KeyCode").enumValueIndex;
+            var secondary = (KeyCode)_element.FindPropertyRelative("CombinationKeyCode").enumValueIndex;
+            var keyCodeText = string.Format("{0}{1}",
+                secondary != KeyCode.None ? string.Format("{0} + ", keyNames[(int)secondary]) : string.Empty,
+                keyNames[main]);
+            rect.x += (_rect.width / 2);
+            EditorGUI.LabelField(rect, keyCodeText);
         }
 
         /// <summary>
