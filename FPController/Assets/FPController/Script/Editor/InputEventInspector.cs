@@ -5,9 +5,19 @@ using UnityEngine;
 
 namespace FPController.FPEditor
 {
+    /// <summary>
+    /// Class to store data about reordable list elements.
+    /// </summary>
     public class ListItem
     {
+        /// <summary>
+        /// Elements height.
+        /// </summary>
         public float Height;
+
+        /// <summary>
+        /// Is the element expanded.
+        /// </summary>
         public bool Expanded;
 
         public ListItem() : this(EditorGUIUtility.singleLineHeight, false)
@@ -28,6 +38,10 @@ namespace FPController.FPEditor
     [CustomEditor(typeof(InputEvent))]
     public class InputEventInspector : Editor
     {
+        /*
+         * Variables.
+         */
+
         /// <summary>
         /// Reordable list for InputEvent.m_events.
         /// </summary>
@@ -38,6 +52,10 @@ namespace FPController.FPEditor
         /// Used to control list elements height (selected/not selected).
         /// </summary>
         private List<ListItem> m_heights;
+
+        /*
+         * Editor Functions.
+         */
 
         private void OnEnable()
         {
@@ -51,48 +69,72 @@ namespace FPController.FPEditor
             //Create reordable list.
             m_list = new ReorderableList(serializedObject, serializedObject.FindProperty("m_events"), false, true, true, true)
             {
-                elementHeight = EditorGUIUtility.singleLineHeight,
-                drawHeaderCallback = (Rect rect) =>
-                {
-                    EditorGUI.LabelField(rect, "Events");
-                },
-                drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
-                {
-                    var element = m_list.serializedProperty.GetArrayElementAtIndex(index);
-                    rect.y += 2;
-                    DrawListItemHeader(rect, element);
-                    m_heights[index].Expanded = isActive;
-                    //Draw elements content if it's selected.
-                    if(isActive)
-                        DrawListItemContent(rect, index, element);
-                },
-                elementHeightCallback = (index) =>
-                {
-                    Repaint();
-                    return m_heights[index].Expanded ? m_heights[index].Height : EditorGUIUtility.singleLineHeight;
-                },
-                onAddCallback = (list) =>
-                {
-                    var index = list.serializedProperty.arraySize;
-                    list.serializedProperty.arraySize++;
-                    list.index = index;
-                    var element = list.serializedProperty.GetArrayElementAtIndex(index);
-                    element.FindPropertyRelative("Name").stringValue = "Input Name";
-                    element.FindPropertyRelative("KeyCode").enumValueIndex = 0;
-                    element.FindPropertyRelative("CombinationKeyCode").enumValueIndex = 0;
-                    element.FindPropertyRelative("KeyDownEvent").boolValue = false;
-                    element.FindPropertyRelative("KeyEvent").boolValue = false;
-                    element.FindPropertyRelative("KeyUpEvent").boolValue = false;
-                    //TODO: Reset unity events, currently cloning events from previous event.
-                    m_heights.Add(new ListItem());
-                },
-                onRemoveCallback = (list) =>
-                {
-                    m_heights.RemoveAt(list.index);
-                    list.serializedProperty.DeleteArrayElementAtIndex(list.index);
-                }
+                drawHeaderCallback = (Rect rect) => DrawHeaderCallback(rect),
+                drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused)
+                    => DrawElementCallback(rect, index, isActive, isFocused),
+                elementHeightCallback = (index) => ElementHeightCallback(index),
+                onAddCallback = (list) => OnAddCallback(list),
+                onRemoveCallback = (list) => OnRemoveCallback(list)
             };
         }
+
+        public override void OnInspectorGUI()
+        {
+            serializedObject.Update();
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("m_manager"));
+            m_list.DoLayoutList();
+            serializedObject.ApplyModifiedProperties();
+        }
+
+        /*
+         * Reorderable List Functions.
+         */
+
+        private void DrawHeaderCallback(Rect _rect)
+        {
+            EditorGUI.LabelField(_rect, "Events");
+        }
+
+        private void DrawElementCallback(Rect _rect, int _index, bool _isActive, bool _isFocused)
+        {
+            var element = m_list.serializedProperty.GetArrayElementAtIndex(_index);
+            DrawListItemHeader(_rect, element);
+            //Draw content if selected.
+            if(m_heights[_index].Expanded = _isActive)
+                DrawListItemContent(_rect, _index, element);
+        }
+
+        private float ElementHeightCallback(int _index)
+        {
+            Repaint();
+            return m_heights[_index].Expanded ? m_heights[_index].Height : EditorGUIUtility.singleLineHeight;
+        }
+
+        private void OnAddCallback(ReorderableList _list)
+        {
+            var index = _list.serializedProperty.arraySize;
+            _list.serializedProperty.arraySize++;
+            _list.index = index;
+            var element = _list.serializedProperty.GetArrayElementAtIndex(index);
+            element.FindPropertyRelative("Name").stringValue = "Input Name";
+            element.FindPropertyRelative("KeyCode").enumValueIndex = 0;
+            element.FindPropertyRelative("CombinationKeyCode").enumValueIndex = 0;
+            element.FindPropertyRelative("KeyDownEvent").boolValue = false;
+            element.FindPropertyRelative("KeyEvent").boolValue = false;
+            element.FindPropertyRelative("KeyUpEvent").boolValue = false;
+            //TODO: Reset unity events, currently cloning events from previous event.
+            m_heights.Add(new ListItem());
+        }
+
+        private void OnRemoveCallback(ReorderableList _list)
+        {
+            m_heights.RemoveAt(_list.index);
+            _list.serializedProperty.DeleteArrayElementAtIndex(_list.index);
+        }
+
+        /*
+         * Private Functions.
+         */
 
         /// <summary>
         /// Draw reordable list element header inside given rect with given property.
@@ -116,7 +158,7 @@ namespace FPController.FPEditor
         }
 
         /// <summary>
-        /// Draw proprestys content inside reordable list.
+        /// Draw propertys content inside reordable list.
         /// </summary>
         /// <param name="_rect">Position inside reordable list.</param>
         /// <param name="_index">Index for current element. Used to control height.</param>
@@ -153,33 +195,22 @@ namespace FPController.FPEditor
             //Draw properties with a loop.
             foreach(var line in properties)
             {
-                //If drawing multiple properties on same line, change line before drawing anything.
-                if(!singleLine)
-                {
-                    rect.y += lineHeight;
-                    height += lineHeight;
-                }
-                //Reset horizontal position to left of reordable list.
+                //Move to starting position.
                 rect.x = _rect.x;
-                //If single line fill whole reordable list width with single property.
-                //If multiple properties on single line, divide width with count of properties on current line.
+                rect.y += singleLine ? 0 : lineHeight;
+                height += singleLine ? 0 : lineHeight;
+                //Calculate width for each field, if the line contains multiple fields.
                 rect.width = singleLine ? _rect.width : _rect.width / line.Length;
                 //Draw properties on currentline.
                 foreach(var entry in line)
                 {
-                    //If only one property on single line, change line before drawing anything.
-                    if(singleLine)
-                    {
-                        rect.y += lineHeight;
-                        height += lineHeight;
-                    }
+                    //Move the new line, if one line contains only one field.
+                    rect.y += singleLine ? lineHeight : 0;
+                    height += singleLine ? lineHeight : 0;
                     //Draw property field.
                     EditorGUI.PropertyField(rect, entry);
-                    //If multiple properties on single line, move horizontal position.
-                    if(!singleLine)
-                    {
-                        rect.x += rect.width;
-                    }
+                    //Move position horizontally, if one line contains multiple fields.
+                    rect.x += singleLine ? 0 : rect.width;
                 }
             }
 
@@ -205,16 +236,16 @@ namespace FPController.FPEditor
                 }
             };
 
-            //Draw events.
+            //Loop through events.
             foreach(var entry in events)
             {
-                //Draw event only if it's wanted.
+                //Draw event only if the user has selected to include it.
                 if(entry.Value)
                 {
                     //Draw event.
                     EditorGUI.PropertyField(rect, entry.Key);
                     //Calculate height for current event.
-                    //Height can very depending on how many functions are added to it.
+                    //Height can vary depending on how many functions are added to the event.
                     var addition = EditorGUI.GetPropertyHeight(entry.Key) + 15f;
                     height += addition;
                     rect.y += addition;
@@ -225,13 +256,9 @@ namespace FPController.FPEditor
             m_heights[_index].Height = height;
         }
 
-        public override void OnInspectorGUI()
-        {
-            serializedObject.Update();
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("m_manager"));
-            m_list.DoLayoutList();
-            serializedObject.ApplyModifiedProperties();
-        }
+        /*
+         * Accessors.
+         */
 
         /// <summary>
         /// Current inspector target as input event.
