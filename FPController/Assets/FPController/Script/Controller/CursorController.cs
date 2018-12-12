@@ -7,6 +7,10 @@ namespace Mouse
     /// </summary>
     public class CursorController : MonoBehaviour
     {
+        /*
+         * Mono Behaviour Functions.
+         */
+
         private void Start()
         {
             //Hide cursor when the game start.
@@ -38,6 +42,10 @@ namespace Mouse
             GUI.Label(new Rect(10, 10, 300, 60), "Hide Cursor: Left Click\nShow Cursor: Esc");
         }
 #endif
+
+        /*
+         * Static Functions.
+         */
 
         /// <summary>
         /// Changes cursors visibility to given state.

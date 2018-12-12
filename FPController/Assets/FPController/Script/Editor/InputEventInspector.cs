@@ -6,41 +6,45 @@ using UnityEngine;
 namespace FPController.FPEditor
 {
     /// <summary>
-    /// Class to store data about reordable list elements.
-    /// </summary>
-    public class ListItem
-    {
-        /// <summary>
-        /// Elements height.
-        /// </summary>
-        public float Height;
-
-        /// <summary>
-        /// Is the element expanded.
-        /// </summary>
-        public bool Expanded;
-
-        public ListItem() : this(EditorGUIUtility.singleLineHeight, false)
-        {
-        }
-
-        public ListItem(float _height, bool _expanded)
-        {
-            Height = _height;
-            Expanded = _expanded;
-        }
-    }
-
-    /// <summary>
     /// Custom inspector for input event.
     /// Primary function is to provide better list for InputEvent.m_events.
     /// </summary>
     [CustomEditor(typeof(InputEvent))]
     public class InputEventInspector : Editor
     {
+        /// <summary>
+        /// Class to store data about reordable list elements.
+        /// </summary>
+        private class ListItem
+        {
+            /// <summary>
+            /// Elements height.
+            /// </summary>
+            public float Height;
+
+            /// <summary>
+            /// Is the element expanded.
+            /// </summary>
+            public bool Expanded;
+
+            public ListItem()
+                : this(LineHeight, false) { }
+
+            public ListItem(float _height, bool _expanded)
+            {
+                Height = _height;
+                Expanded = _expanded;
+            }
+        }
+
         /*
          * Variables.
          */
+
+        /// <summary>
+        /// Height for single line in inspector.
+        /// </summary>
+        private static float LineHeight = EditorGUIUtility.singleLineHeight * 1.1f;
 
         /// <summary>
         /// Reordable list for InputEvent.m_events.
@@ -168,16 +172,62 @@ namespace FPController.FPEditor
             if(_rect.width < 0)
                 return;
 
-            var lineHeight = EditorGUIUtility.singleLineHeight * 1.1f;
-            var rect = new Rect(_rect.x, _rect.y + lineHeight, _rect.width, lineHeight);
+            var rect = new Rect(_rect.x, _rect.y + LineHeight, _rect.width, LineHeight);
             //If single line, only draw one property on single line.
             var singleLine = _rect.width < 600f;
-            var height = lineHeight * 2;
             EditorGUIUtility.labelWidth = _rect.width / (singleLine ? 2 : 4);
             EditorGUI.PropertyField(rect, _element.FindPropertyRelative("Name"), new GUIContent("Event Name"));
-            //List of arrays, where single array represents single line in inspector, if inspector is wide enought.
-            //Used to simplify calculating position and size for each field, since EditorGUIUtility is not supported inside reordable list.
-            var properties = new List<SerializedProperty[]>
+
+            //Draw properties with a loop.
+            foreach(var line in GetProperties(_element))
+            {
+                //Move to starting position.
+                rect.x = _rect.x;
+                rect.y += singleLine ? 0 : LineHeight;
+                //Calculate width for each field, if the line contains multiple fields.
+                rect.width = singleLine ? _rect.width : _rect.width / line.Length;
+                //Draw properties on currentline.
+                foreach(var entry in line)
+                {
+                    //Move the new line, if one line contains only one field.
+                    rect.y += singleLine ? LineHeight : 0;
+                    //Draw property field.
+                    EditorGUI.PropertyField(rect, entry);
+                    //Move position horizontally, if one line contains multiple fields.
+                    rect.x += singleLine ? 0 : rect.width;
+                }
+            }
+
+            //Move rect to the bottom left of the reordable list.
+            rect.x = _rect.x;
+            rect.width = _rect.width;
+            rect.y += LineHeight;
+
+            //Loop through events.
+            foreach(var entry in GetEvents(_element))
+            {
+                //Draw event only if the user has selected to include it.
+                if(entry.Value)
+                {
+                    //Draw event.
+                    EditorGUI.PropertyField(rect, entry.Key);
+                    //Add current event height to current position.
+                    rect.y += EditorGUI.GetPropertyHeight(entry.Key) + 15f;
+                }
+            }
+
+            //Set height for current property.
+            m_heights[_index].Height = (rect.y - _rect.y);
+        }
+
+        /// <summary>
+        /// Converts serialized property in to a list of arrays, where each array represents a single line on the inspector.
+        /// </summary>
+        /// <param name="_element">Serialized property containing properties.</param>
+        /// <returns>List of arrays, where each array represent a single line.</returns>
+        private List<SerializedProperty[]> GetProperties(SerializedProperty _element)
+        {
+            return new List<SerializedProperty[]>
             {
                 new SerializedProperty[]
                 {
@@ -191,36 +241,16 @@ namespace FPController.FPEditor
                     _element.FindPropertyRelative("KeyUpEvent"),
                 }
             };
+        }
 
-            //Draw properties with a loop.
-            foreach(var line in properties)
-            {
-                //Move to starting position.
-                rect.x = _rect.x;
-                rect.y += singleLine ? 0 : lineHeight;
-                height += singleLine ? 0 : lineHeight;
-                //Calculate width for each field, if the line contains multiple fields.
-                rect.width = singleLine ? _rect.width : _rect.width / line.Length;
-                //Draw properties on currentline.
-                foreach(var entry in line)
-                {
-                    //Move the new line, if one line contains only one field.
-                    rect.y += singleLine ? lineHeight : 0;
-                    height += singleLine ? lineHeight : 0;
-                    //Draw property field.
-                    EditorGUI.PropertyField(rect, entry);
-                    //Move position horizontally, if one line contains multiple fields.
-                    rect.x += singleLine ? 0 : rect.width;
-                }
-            }
-
-            //Move rect to the bottom left of the reordable list.
-            rect.x = _rect.x;
-            rect.width = _rect.width;
-            rect.y += lineHeight;
-
-            //Create dictionary containing events and boolean value telling if the event is wanted.
-            var events = new Dictionary<SerializedProperty, bool>
+        /// <summary>
+        /// Returns dictionary containing events as keys and are they wanted as values.
+        /// </summary>
+        /// <param name="_element">Serialized property containing events.</param>
+        /// <returns>Dictionary containing events and are they wanted.</returns>
+        private Dictionary<SerializedProperty, bool> GetEvents(SerializedProperty _element)
+        {
+            return new Dictionary<SerializedProperty, bool>
             {
                 {
                     _element.FindPropertyRelative("GetKeyDown"),
@@ -235,25 +265,6 @@ namespace FPController.FPEditor
                     _element.FindPropertyRelative("KeyUpEvent").boolValue
                 }
             };
-
-            //Loop through events.
-            foreach(var entry in events)
-            {
-                //Draw event only if the user has selected to include it.
-                if(entry.Value)
-                {
-                    //Draw event.
-                    EditorGUI.PropertyField(rect, entry.Key);
-                    //Calculate height for current event.
-                    //Height can vary depending on how many functions are added to the event.
-                    var addition = EditorGUI.GetPropertyHeight(entry.Key) + 15f;
-                    height += addition;
-                    rect.y += addition;
-                }
-            }
-
-            //Set height for current property.
-            m_heights[_index].Height = height;
         }
 
         /*

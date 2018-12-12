@@ -9,6 +9,10 @@ namespace FPController
     [RequireComponent(typeof(FirstPersonController))]
     public class FirstPersonInputManager : MonoBehaviour
     {
+        /*
+         * Variables.
+         */
+
         /// <summary>
         /// Target controller.
         /// </summary>
@@ -18,6 +22,10 @@ namespace FPController
         /// Multiplier for mouse movement ('Sensitivity').
         /// </summary>
         private float m_lookSpeed = 2;
+
+        /*
+         * Mono Behaviour Functions.
+         */
 
         private void Awake()
         {
