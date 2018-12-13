@@ -31,7 +31,7 @@ namespace FPController
     /// }
     /// </code>
     /// </example>
-    public class InputAction
+    public class InputAction : IKeyEvent
     {
         /*
          * Variables.

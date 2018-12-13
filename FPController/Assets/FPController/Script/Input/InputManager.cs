@@ -15,7 +15,7 @@ namespace FPController
         /// <summary>
         /// List of registered actions.
         /// </summary>
-        private List<InputAction> m_actions;
+        private List<IKeyEvent> m_actions;
 
         /*
          * MonoBehaviour Functions.
@@ -23,7 +23,7 @@ namespace FPController
 
         private void Awake()
         {
-            m_actions = new List<InputAction>();
+            m_actions = new List<IKeyEvent>();
         }
 
         private void Update()
@@ -45,7 +45,7 @@ namespace FPController
         /// Add list of actions to input manager.
         /// </summary>
         /// <param name="_actions">Actions to add.</param>
-        public void Register(List<InputAction> _actions)
+        public void Register(List<IKeyEvent> _actions)
         {
             m_actions.AddRange(_actions);
         }

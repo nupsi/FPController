@@ -133,6 +133,8 @@ namespace FPController
         {
             //Check if standing up is requested and possible.
             StandUp();
+            //Set target position for camera.
+            m_targetPosition = CameraOffset;
         }
 
         private void OnDisable()
@@ -405,8 +407,6 @@ namespace FPController
 
             //Store previous force.
             m_previousForce = transform.InverseTransformDirection(force);
-            //Set target position for camera.
-            m_targetPosition = CameraOffset;
         }
 
         /// <summary>
@@ -576,8 +576,7 @@ namespace FPController
         {
             get
             {
-                var hit = new RaycastHit();
-                return Physics.SphereCast(GroundSphereCenter, Settings.Radius, Vector3.down, out hit, 0.05f);
+                return Physics.SphereCast(new Ray(GroundSphereCenter, Vector3.down), Settings.Radius, 0.05f);
             }
         }
 
@@ -605,12 +604,9 @@ namespace FPController
         {
             get
             {
-                if(m_crouching)
-                {
-                    var hit = new RaycastHit();
-                    return !Physics.SphereCast(GroundSphereCenter, Settings.Radius, Vector3.up, out hit, Settings.Height);
-                }
-                return true;
+                return m_crouching
+                    ? !Physics.SphereCast(new Ray(GroundSphereCenter, Vector3.up), Settings.Radius, Settings.Height)
+                    : true;
             }
         }
 

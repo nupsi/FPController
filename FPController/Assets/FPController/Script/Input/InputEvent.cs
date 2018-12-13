@@ -56,11 +56,11 @@ namespace FPController
         /// <summary>
         /// Converst current list of event data into list of actions.
         /// </summary>
-        private List<InputAction> Actions
+        private List<IKeyEvent> Actions
         {
             get
             {
-                var actions = new List<InputAction>();
+                var actions = new List<IKeyEvent>();
                 foreach(var current in m_events)
                 {
                     if(current.KeyCode != KeyCode.None)
