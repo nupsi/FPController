@@ -4,8 +4,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>493</x>
-      <y>493</y>
+      <x>561</x>
+      <y>476</y>
       <w>204</w>
       <h>68</h>
     </coordinates>
@@ -16,9 +16,9 @@ valign=center</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>493</x>
-      <y>374</y>
-      <w>204</w>
+      <x>833</x>
+      <y>476</y>
+      <w>170</w>
       <h>68</h>
     </coordinates>
     <panel_attributes>CustomEvent
@@ -28,19 +28,19 @@ valign=center</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>578</x>
-      <y>425</y>
-      <w>51</w>
-      <h>102</h>
+      <x>748</x>
+      <y>493</y>
+      <w>119</w>
+      <h>51</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;40.0</additional_attributes>
+    <additional_attributes>10.0;10.0;50.0;10.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>221</x>
-      <y>493</y>
+      <x>289</x>
+      <y>476</y>
       <w>204</w>
       <h>68</h>
     </coordinates>
@@ -51,8 +51,8 @@ valign=center</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>408</x>
-      <y>510</y>
+      <x>476</x>
+      <y>493</y>
       <w>119</w>
       <h>51</h>
     </coordinates>
@@ -62,8 +62,8 @@ valign=center</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>765</x>
-      <y>493</y>
+      <x>833</x>
+      <y>595</y>
       <w>170</w>
       <h>68</h>
     </coordinates>
@@ -74,8 +74,8 @@ valign=center</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1003</x>
-      <y>493</y>
+      <x>289</x>
+      <y>595</y>
       <w>204</w>
       <h>68</h>
     </coordinates>
@@ -84,21 +84,10 @@ valign=center</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>918</x>
-      <y>510</y>
-      <w>119</w>
-      <h>51</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>50.0;10.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>204</x>
-      <y>374</y>
+      <x>272</x>
+      <y>357</y>
       <w>238</w>
       <h>68</h>
     </coordinates>
@@ -109,8 +98,8 @@ valign=center</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>306</x>
-      <y>425</y>
+      <x>374</x>
+      <y>408</y>
       <w>51</w>
       <h>102</h>
     </coordinates>
@@ -120,23 +109,47 @@ valign=center</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>680</x>
-      <y>510</y>
+      <x>374</x>
+      <y>527</y>
+      <w>51</w>
+      <h>102</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;40.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>561</x>
+      <y>595</y>
+      <w>204</w>
+      <h>68</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+IKeyEvent
+valign=center</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>748</x>
+      <y>612</y>
       <w>119</w>
       <h>51</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;50.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>306</x>
-      <y>544</y>
-      <w>833</w>
-      <h>85</h>
+      <x>476</x>
+      <y>612</y>
+      <w>119</w>
+      <h>51</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>470.0;10.0;470.0;30.0;10.0;30.0;10.0;10.0</additional_attributes>
+    <additional_attributes>50.0;10.0;10.0;10.0</additional_attributes>
   </element>
 </diagram>

@@ -55,5 +55,11 @@ namespace FPController
         /// <see cref="FirstPersonController.StickToSlope(Vector3)"/>
         /// </summary>
         public float MaxSlopeAngle = 45f;
+
+        /// <summary>
+        /// Physics Material Max Friction.
+        /// Used when on slopes under max angle.
+        /// </summary>
+        public float MaxFriction = 20f;
     }
 }

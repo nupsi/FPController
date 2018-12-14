@@ -29,6 +29,7 @@ namespace FPController.FPEditor
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Other", EditorStyles.boldLabel);
             _preset.MaxSlopeAngle = EditorGUILayout.Slider("Max Slope Angle", _preset.MaxSlopeAngle, 0, 60f);
+            _preset.MaxSlopeAngle = EditorGUILayout.Slider("Slope Friction", _preset.MaxFriction, 0, 50f);
         }
     }
 }

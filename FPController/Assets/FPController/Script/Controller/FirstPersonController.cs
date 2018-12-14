@@ -18,54 +18,40 @@ namespace FPController
         /// <summary>
         /// Controllers Capsule Collider component.
         /// Cached for changing Physics Material and height.
-        /// <see cref="ChangeHeight(float)"/>
-        /// <see cref="ChangeFriction(float, PhysicMaterialCombine)"/>
-        /// <see cref="m_physicMaterial"/>
         /// </summary>
         private CapsuleCollider m_collider;
 
         /// <summary>
         /// Physics Material for Capsule Collider.
         /// Used to manage friction between charachter and ground to prevent sliding along slopes.
-        /// <see cref="ChangeFriction(float, PhysicMaterialCombine)"/>
-        /// <see cref="m_collider"/>
         /// </summary>
         private PhysicMaterial m_physicMaterial;
 
         /// <summary>
         /// Controllers Rigidbody component.
         /// Used for applying movement.
-        /// <see cref="Move(float, float)"/>
-        /// <see cref="Move(Vector3)"/>
-        /// <see cref="StickToSlope(Vector3)"/>
         /// </summary>
         private Rigidbody m_rigidbody;
 
         /// <summary>
         /// Cached First Person camera.
         /// Once the camera is cached on Awake() its parent transform is cleared.
-        /// <see cref="UpdateCamera"/>
-        /// <see cref="SetCamera"/>
-        /// <see cref="CameraOffset"/>
         /// </summary>
         private Camera m_camera;
 
         /// <summary>
         /// Camera rotation as euler angle.
-        /// <see cref="MouseMove(Vector2)"/>
         /// </summary>
         private Vector3 m_cameraRotation;
 
         /// <summary>
         /// Previous force added in local space to Rigidbody during Move().
-        /// <see cref="Move(Vector3)"/>
         /// </summary>
         private Vector3 m_previousForce;
 
         /// <summary>
         /// Previous force added in local space to Rigidbody while grounded during Move().
         /// Used for calculating movement during air time.
-        /// <see cref="Move(Vector3)"/>
         /// </summary>
         private Vector3 m_lastGround;
 
@@ -89,17 +75,11 @@ namespace FPController
 
         /// <summary>
         /// Is charachter currently running.
-        /// <see cref="StartRunning"/>
-        /// <see cref="StopRunning"/>
-        /// <see cref="CanRun"/>
         /// </summary>
         private bool m_running = false;
 
         /// <summary>
         /// Is charachter currently crouching.
-        /// <see cref="CrouchDown"/>
-        /// <see cref="CrouchUp"/>
-        /// <see cref="CanCrouch"/>
         /// </summary>
         private bool m_crouching = false;
 
@@ -114,7 +94,6 @@ namespace FPController
 
         private void Awake()
         {
-            //Time.timeScale = 0.2f;
             Reset();
             //Clear cameras parent.
             //Camera is cached during Reset().
@@ -169,7 +148,10 @@ namespace FPController
             m_rigidbody = GetComponent<Rigidbody>();
             m_rigidbody.freezeRotation = true;
             m_rigidbody.mass = 10f;
-            m_physicMaterial = new PhysicMaterial
+
+            m_collider = GetComponent<CapsuleCollider>();
+            m_collider.radius = Settings.Radius;
+            m_collider.material = m_physicMaterial = new PhysicMaterial
             {
                 name = string.Format("{0}PhysicMaterial", name),
                 dynamicFriction = 0,
@@ -177,9 +159,6 @@ namespace FPController
                 frictionCombine = PhysicMaterialCombine.Minimum
             };
 
-            m_collider = GetComponent<CapsuleCollider>();
-            m_collider.radius = Settings.Radius;
-            m_collider.material = m_physicMaterial;
             ChangeHeight(Settings.Height);
 
             m_camera = GetComponentInChildren<Camera>();
@@ -439,7 +418,7 @@ namespace FPController
             {
                 if(_input == Vector3.zero)
                 {
-                    MaxFriction(20f);
+                    MaxFriction(Settings.MaxFriction);
                     return;
                 }
             }
@@ -520,7 +499,7 @@ namespace FPController
          */
 
         /// <summary>
-        /// Can charachter run.
+        /// Is Running allowed.
         /// </summary>
         private bool CanRun
         {
@@ -531,7 +510,7 @@ namespace FPController
         }
 
         /// <summary>
-        /// Can charachter crouch.
+        /// Is Crouching allowed.
         /// </summary>
         public bool CanCrouch
         {
@@ -611,7 +590,7 @@ namespace FPController
         }
 
         /// <summary>
-        /// Center of the bottom 'sphere' of capsule collider.
+        /// Center of the bottom 'sphere' of the capsule collider.
         /// Note: In reality 0.1 times upper than real center.
         /// </summary>
         private Vector3 GroundSphereCenter
