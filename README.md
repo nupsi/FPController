@@ -1,5 +1,10 @@
 # FPController
-Simple First Person Rigidbody Controller for Unity Game Engine
+Simple First Person Rigidbody Controller and input manager for Unity Game Engine.  
+Controller provides basic first person controls using rigidbody and input managers allows binding functions to keys inside the editor.
+
+# Download
+Download the latest unity package from [releases](https://github.com/nupsi/FPController/releases).  
+Package contains example scene and scripts for the controller and the input manager.
 
 ## First Person Controller
 Uses rigidbody and capsule collider with physics material to form a first person controller.
