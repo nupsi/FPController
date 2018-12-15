@@ -52,7 +52,7 @@ namespace FPController
 
         /// <summary>
         /// Maximum angle for slope.
-        /// <see cref="FirstPersonController.StickToSlope(Vector3)"/>
+        /// <see cref="FirstPersonController.UpdateFriction(Vector3)"/>
         /// </summary>
         public float MaxSlopeAngle = 45f;
 

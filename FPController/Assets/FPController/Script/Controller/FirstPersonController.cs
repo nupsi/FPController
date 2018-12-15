@@ -382,8 +382,8 @@ namespace FPController
             //Clamp velocity to limit max speed.
             ClampVelocity();
             //Update Capsule Colliders friction to allow/prevent sliding along surfaces.
-            StickToSlope(_input);
-
+            UpdateFriction(_input);
+            StickToGround();
             //Store previous force.
             m_previousForce = transform.InverseTransformDirection(force);
         }
@@ -406,7 +406,7 @@ namespace FPController
         /// Input is required to prevent high friction during movement.
         /// </summary>
         /// <param name="_input">Input for movement.</param>
-        private void StickToSlope(Vector3 _input)
+        private void UpdateFriction(Vector3 _input)
         {
             if(!Grounded)
             {
@@ -423,6 +423,21 @@ namespace FPController
                 }
             }
             ZeroFriction();
+        }
+
+        /// <summary>
+        /// Fix controllers velocity to move along slope or ground after surface angle changes.
+        /// </summary>
+        private void StickToGround()
+        {
+            var hit = new RaycastHit();
+            if(Physics.SphereCast(GroundSphereCenter, Settings.Radius, Vector3.down, out hit, 0.075f))
+            {
+                if(SurfaceAngle < Settings.MaxSlopeAngle)
+                {
+                    m_rigidbody.velocity = m_rigidbody.velocity - Vector3.Project(m_rigidbody.velocity, hit.normal);
+                }
+            }
         }
 
         /// <summary>
