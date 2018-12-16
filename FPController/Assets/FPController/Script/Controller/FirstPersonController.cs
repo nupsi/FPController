@@ -74,12 +74,12 @@ namespace FPController
         private FirstPersonPreset m_settings;
 
         /// <summary>
-        /// Is charachter currently running.
+        /// Is the controller currently running.
         /// </summary>
         private bool m_running = false;
 
         /// <summary>
-        /// Is charachter currently crouching.
+        /// Is the controller currently crouching.
         /// </summary>
         private bool m_crouching = false;
 
@@ -212,7 +212,7 @@ namespace FPController
          */
 
         /// <summary>
-        /// Move Controllers Rigidbody component with given horizontal and vertical input.
+        /// Moves the rigidbody component with given horizontal and vertical input.
         /// </summary>
         /// <param name="_horizontal">Horizontal Input.</param>
         /// <param name="_vertical">Vertical Input.</param>
@@ -222,7 +222,7 @@ namespace FPController
         }
 
         /// <summary>
-        /// Rotate Charachter with given horizontal and vertical input.
+        /// Rotates the controller with given horizontal and vertical input.
         /// </summary>
         /// <param name="_horizontal">Horizontal Input.</param>
         /// <param name="_vertical">Vertical Input.</param>
@@ -232,7 +232,7 @@ namespace FPController
         }
 
         /// <summary>
-        /// Makes charachter crouch down if allowed.
+        /// Makes the controller crouch down if allowed.
         /// <see cref="CanCrouch"/>
         /// </summary>
         public void CrouchDown()
@@ -247,7 +247,7 @@ namespace FPController
         }
 
         /// <summary>
-        /// Makes chrachter stands up after crouching.
+        /// Makes the controller stands up after crouching.
         /// <see cref="CrouchDown"/>
         /// </summary>
         public void CrouchUp()
@@ -261,7 +261,7 @@ namespace FPController
         }
 
         /// <summary>
-        /// Makes charachter run if allowed.
+        /// Makes the conttroller run if allowed.
         /// <see cref="CanRun"/>
         /// </summary>
         public void StartRunning()
@@ -274,7 +274,7 @@ namespace FPController
         }
 
         /// <summary>
-        /// Makes charachter walk if running.
+        /// Makes the controller walk if running.
         /// <see cref="StartRunning"/>
         /// </summary>
         public void StopRunning()
@@ -287,7 +287,7 @@ namespace FPController
         }
 
         /// <summary>
-        /// Makes charachter jump if on ground.
+        /// Makes the controller jump if on the ground.
         /// <see cref="Grounded"/>
         /// <see cref="m_jumpForce"/>
         /// </summary>
@@ -327,7 +327,7 @@ namespace FPController
         }
 
         /// <summary>
-        /// Resets camera to the right local position.
+        /// Resets controllers camera to the right local position.
         /// <see cref="CameraOffset"/>
         /// </summary>
         private void SetCamera()
@@ -421,6 +421,10 @@ namespace FPController
                     MaxFriction(Settings.MaxFriction);
                     return;
                 }
+                else
+                {
+                    m_rigidbody.AddForce(Vector3.down * Physics.gravity.y, ForceMode.Force);
+                }
             }
             ZeroFriction();
         }
@@ -441,7 +445,7 @@ namespace FPController
         }
 
         /// <summary>
-        /// Rotates charachter with given input
+        /// Rotates the controller with given input
         /// </summary>
         /// <param name="_input">Input.</param>
         private void MouseMove(Vector2 _input)
@@ -466,7 +470,7 @@ namespace FPController
         }
 
         /// <summary>
-        /// Tries to stand up if requested and possible.
+        /// Checks if standing up is requested and is it possible.
         /// </summary>
         private void StandUp()
         {
@@ -564,7 +568,7 @@ namespace FPController
         }
 
         /// <summary>
-        /// Is the charachter currently standing on ground.
+        /// Is the controller currently standing on ground.
         /// </summary>
         private bool Grounded
         {
@@ -575,7 +579,7 @@ namespace FPController
         }
 
         /// <summary>
-        /// Returns surface angle below charachter.
+        /// Returns surface angle below controller.
         /// </summary>
         private float SurfaceAngle
         {
