@@ -170,11 +170,14 @@ namespace FPController
         }
 
 #if UNITY_EDITOR
+
+        [SerializeField]
+        private bool m_drawRays = false;
         private Vector3 debug_previousPosition;
 
         private void OnDrawGizmos()
         {
-            if(UnityEditor.EditorApplication.isPlaying)
+            if(m_drawRays && UnityEditor.EditorApplication.isPlaying)
             {
                 var radius = 0.05f;
                 var root = transform.position;
@@ -603,7 +606,7 @@ namespace FPController
             get
             {
                 return m_crouching
-                    ? !Physics.SphereCast(new Ray(GroundSphereCenter, Vector3.up), Settings.Radius, Settings.Height)
+                    ? !Physics.SphereCast(new Ray(GroundSphereCenter, Vector3.up), Settings.Radius, Settings.Height - Settings.Radius)
                     : true;
             }
         }
