@@ -173,6 +173,7 @@ namespace FPController
 
         [SerializeField]
         private bool m_drawRays = false;
+
         private Vector3 debug_previousPosition;
 
         private void OnDrawGizmos()
@@ -316,7 +317,7 @@ namespace FPController
         private void UpdateCamera()
         {
             //Check distance between body and camera.
-            if(Vector3.Distance(transform.position, m_camera.transform.position) > Settings.Height * 2)
+            if(Vector3.Distance(transform.position, m_camera.transform.position) > Settings.Height)
             {
                 SetCamera();
             }
@@ -398,9 +399,18 @@ namespace FPController
         {
             var y = m_rigidbody.velocity.y;
             var velocity = m_rigidbody.velocity;
-            velocity.y = 0;
-            velocity = Vector3.ClampMagnitude(velocity, m_targetSpeed);
-            velocity.y = y;
+
+            if(Grounded)
+            {
+                velocity = Vector3.ClampMagnitude(velocity, m_targetSpeed);
+            }
+            else
+            {
+                velocity.y = 0;
+                velocity = Vector3.ClampMagnitude(velocity, m_targetSpeed);
+                velocity.y = y;
+            }
+
             m_rigidbody.velocity = velocity;
         }
 
