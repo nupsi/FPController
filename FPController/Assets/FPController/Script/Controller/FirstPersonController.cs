@@ -102,13 +102,13 @@ namespace FPController
             m_cameraRotation = m_camera.transform.eulerAngles;
         }
 
-        private void Update()
+        protected void Update()
         {
             //Update camera on each frame to lerp it to its target position.
             UpdateCamera();
         }
 
-        private void FixedUpdate()
+        protected void FixedUpdate()
         {
             //Check if standing up is requested and possible.
             StandUp();
