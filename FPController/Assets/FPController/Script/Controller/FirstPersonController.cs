@@ -615,8 +615,9 @@ namespace FPController
         {
             get
             {
+                var center = new Vector3(transform.position.x, transform.position.y + Settings.Radius, transform.position.z);
                 return m_crouching
-                    ? !Physics.SphereCast(new Ray(GroundSphereCenter, Vector3.up), Settings.Radius, Settings.Height - Settings.Radius)
+                    ? !Physics.SphereCast(new Ray(center, Vector3.up), Settings.Radius, Settings.Height - (Settings.Radius * 2))
                     : true;
             }
         }
