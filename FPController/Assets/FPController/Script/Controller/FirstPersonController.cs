@@ -587,7 +587,7 @@ namespace FPController
         {
             get
             {
-                return Physics.SphereCast(new Ray(GroundSphereCenter, Vector3.down), Settings.Radius, 0.05f);
+                return Physics.SphereCast(new Ray(GroundSphereOffset, Vector3.down), Settings.Radius, 0.05f);
             }
         }
 
@@ -600,7 +600,7 @@ namespace FPController
             {
                 var angle = 0f;
                 var hit = new RaycastHit();
-                if(Physics.SphereCast(GroundSphereCenter, Settings.Radius, Vector3.down, out hit, 0.05f))
+                if(Physics.SphereCast(GroundSphereOffset, Settings.Radius, Vector3.down, out hit, 0.05f))
                 {
                     angle = Vector3.Angle(Vector3.up, hit.normal);
                 }
@@ -615,22 +615,31 @@ namespace FPController
         {
             get
             {
-                var center = new Vector3(transform.position.x, transform.position.y + Settings.Radius, transform.position.z);
                 return m_crouching
-                    ? !Physics.SphereCast(new Ray(center, Vector3.up), Settings.Radius, Settings.Height - (Settings.Radius * 2))
+                    ? !Physics.SphereCast(new Ray(GroundSphereCenter, Vector3.up), Settings.Radius, Settings.Height - (Settings.Radius * 2))
                     : true;
             }
         }
 
         /// <summary>
         /// Center of the bottom 'sphere' of the capsule collider.
-        /// Note: In reality 0.1 times upper than real center.
         /// </summary>
         private Vector3 GroundSphereCenter
         {
             get
             {
-                return new Vector3(transform.position.x, transform.position.y + (Settings.Radius * 1.1f), transform.position.z);
+                return new Vector3(transform.position.x, transform.position.y + Settings.Radius, transform.position.z);
+            }
+        }
+
+        /// <summary>
+        /// Center of the bottom 'sphere' of the capsule collider with offset.
+        /// </summary>
+        private Vector3 GroundSphereOffset
+        {
+            get
+            {
+                return GroundSphereCenter + (Vector3.up * (Settings.Radius * 0.1f));
             }
         }
     }
