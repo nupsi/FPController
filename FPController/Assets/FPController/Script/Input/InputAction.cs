@@ -110,9 +110,7 @@ namespace FPController
         {
             get
             {
-                return m_combinationKey == KeyCode.None
-                    ? true
-                    : Input.GetKey(m_combinationKey);
+                return m_combinationKey == KeyCode.None || Input.GetKey(m_combinationKey);
             }
         }
     }

@@ -76,23 +76,23 @@ namespace FPController
         /// <summary>
         /// Is the controller currently running.
         /// </summary>
-        private bool m_running = false;
+        private bool m_running;
 
         /// <summary>
         /// Is the controller currently crouching.
         /// </summary>
-        private bool m_crouching = false;
+        private bool m_crouching;
 
         /// <summary>
         /// Is there request to stand up after crouching.
         /// </summary>
-        private bool m_requestingStandUp = false;
+        private bool m_requestingStandUp;
 
         /*
          * MonoBehaviour Functions.
          */
 
-        private void Awake()
+        protected void Awake()
         {
             Reset();
             //Clear cameras parent.
@@ -116,7 +116,7 @@ namespace FPController
             m_targetPosition = CameraOffset;
         }
 
-        private void OnDisable()
+        protected void OnDisable()
         {
             if(m_camera != null)
             {
@@ -126,7 +126,7 @@ namespace FPController
             }
         }
 
-        private void OnEnable()
+        protected void OnEnable()
         {
             if(m_camera != null)
             {
@@ -138,10 +138,9 @@ namespace FPController
             }
         }
 
-        private void Reset()
+        protected void Reset()
         {
             //Cache and reset required components.
-
             this.name = Settings.Name;
             this.tag = Settings.Tag;
 
@@ -176,7 +175,7 @@ namespace FPController
 
         private Vector3 debug_previousPosition;
 
-        private void OnDrawGizmos()
+        protected void OnDrawGizmos()
         {
             if(m_drawRays && UnityEditor.EditorApplication.isPlaying)
             {
@@ -217,11 +216,19 @@ namespace FPController
 
         /// <summary>
         /// Moves the rigidbody component with given horizontal and vertical input.
+        /// By default the input values are clamped between -1 and 1 and multiplied by the target speed.
         /// </summary>
         /// <param name="_horizontal">Horizontal Input.</param>
         /// <param name="_vertical">Vertical Input.</param>
-        public void Move(float _horizontal, float _vertical)
+        /// <param name="_clamp">Clamp the input values between -1 and 1.</param>
+        public void Move(float _horizontal, float _vertical, bool _clamp = true)
         {
+            if(_clamp)
+            {
+                _horizontal = Mathf.Clamp(_horizontal, -1, 1);
+                _vertical = Mathf.Clamp(_vertical, -1, 1);
+            }
+
             Move(new Vector3(_horizontal * m_targetSpeed, 0, _vertical * m_targetSpeed));
         }
 
@@ -317,9 +324,11 @@ namespace FPController
         private void UpdateCamera()
         {
             //Check distance between body and camera.
-            if(Vector3.Distance(transform.position, m_camera.transform.position) > Settings.Height)
+            if(Vector3.Distance(transform.position, m_camera.transform.position) > Settings.Height
+                || Mathf.Round(m_rigidbody.velocity.magnitude * 10) / 10 <= 0.1f)
             {
                 SetCamera();
+                return;
             }
 
             //Estimate offset with current velocity.
@@ -347,32 +356,9 @@ namespace FPController
         {
             //If charachter is on air, previous force is used to control velocity.
             var force = m_previousForce;
-
-            if(Grounded)
-            {
-                //If charachter is grounded given input is used to control velocity.
-                m_lastGround = m_previousForce;
-                force = transform.TransformDirection(_input);
-            }
-            else
-            {
-                //If charachter is in air.
-                //Creating temporary variable to modify air movement.
-                var temp = new Vector3
-                {
-                    x = Mathf.Clamp(force.x + (_input.x / 2), -m_targetSpeed, m_targetSpeed),
-                    z = m_lastGround.z > 0
-                        ? Mathf.Clamp(force.z + (_input.z / 2), 0, m_targetSpeed)
-                        : Mathf.Clamp(force.z + (_input.z / 2), -m_targetSpeed, 0)
-                };
-                //Previous force affecting how new force is applied.
-                force = m_lastGround == Vector3.zero ? _input : temp;
-                //Lerping force towards zero if input is not given (slowing the charachter down).
-                if(_input.x == 0) force.x = Mathf.Lerp(force.x, 0, 2 * Time.deltaTime);
-                if(_input.z == 0) force.z = Mathf.Lerp(force.z, 0, 2 * Time.deltaTime);
-                //Convert new force to global space.
-                force = transform.TransformDirection(force);
-            }
+            force = Grounded
+                ? GroundControl(_input)
+                : AirControl(_input, force);
 
             //Store rigidbodys current velocity.
             var velocity = m_rigidbody.velocity;
@@ -390,6 +376,41 @@ namespace FPController
             StickToGround();
             //Store previous force.
             m_previousForce = transform.InverseTransformDirection(force);
+        }
+
+        private Vector3 GroundControl(Vector3 _input)
+        {
+            m_lastGround = m_previousForce;
+            return transform.TransformDirection(_input);
+        }
+
+        private Vector3 AirControl(Vector3 _input, Vector3 _force)
+        {
+            //Target speed for movement.
+            var speed = m_targetSpeed;
+            //Input x is slowed downm when moving in air.
+            var x = _force.x + (_input.x / 2);
+            //Input z is slowed up, when moving in air.
+            var z = _force.z + (_input.z / 2);
+            //Creating temporary variable to modify air movement.
+            var temp = new Vector3
+            {
+                x = Mathf.Clamp(x, -speed, speed),
+                z = m_lastGround.z > 0 ? Mathf.Clamp(z, 0, speed) : Mathf.Clamp(z, -speed, 0)
+            };
+            //Previous force affecting how new force is applied.
+            _force = m_lastGround == Vector3.zero ? _input : temp;
+            //Lerping force towards zero if input is not given (slowing the charachter down).
+            if(_input.x == 0)
+            {
+                _force.x = Mathf.Lerp(_force.x, 0, 2 * Time.deltaTime);
+            }
+            if(_input.z == 0)
+            {
+                _force.z = Mathf.Lerp(_force.z, 0, 2 * Time.deltaTime);
+            }
+            //Convert new force to global space.
+            return transform.TransformDirection(_force);
         }
 
         /// <summary>
@@ -452,7 +473,7 @@ namespace FPController
             {
                 if(SurfaceAngle < Settings.MaxSlopeAngle)
                 {
-                    m_rigidbody.velocity = m_rigidbody.velocity - Vector3.Project(m_rigidbody.velocity, hit.normal);
+                    m_rigidbody.velocity -= Vector3.Project(m_rigidbody.velocity, hit.normal);
                 }
             }
         }
@@ -468,7 +489,7 @@ namespace FPController
 
             transform.Rotate(new Vector3(0, _input.x, 0));
             m_cameraRotation.x = Mathf.Clamp(m_cameraRotation.x + -_input.y, -90, 90);
-            m_cameraRotation = new Vector3(m_cameraRotation.x, transform.rotation.eulerAngles.y, transform.eulerAngles.z);
+            m_cameraRotation = new Vector3(m_cameraRotation.x, transform.eulerAngles.y, transform.eulerAngles.z);
             m_camera.transform.eulerAngles = m_cameraRotation;
         }
 
@@ -537,7 +558,7 @@ namespace FPController
         {
             get
             {
-                return (!m_crouching);
+                return !m_crouching;
             }
         }
 
@@ -548,7 +569,7 @@ namespace FPController
         {
             get
             {
-                return (!m_running);
+                return !m_running;
             }
         }
 
