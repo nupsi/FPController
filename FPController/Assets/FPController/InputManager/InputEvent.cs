@@ -30,7 +30,7 @@ namespace FPController
          * Mono Behaviour Functions.
          */
 
-        private void Awake()
+        protected void Awake()
         {
             if(m_manager == null)
             {
@@ -38,13 +38,13 @@ namespace FPController
             }
         }
 
-        private void Start()
+        protected void Start()
         {
             //Register events by converting them into actions.
             m_manager.Register(Actions);
         }
 
-        private void Reset()
+        protected void Reset()
         {
             m_events = new List<InputEventData>();
         }
@@ -63,12 +63,13 @@ namespace FPController
                 var actions = new List<IKeyEvent>();
                 foreach(var current in m_events)
                 {
-                    if(current.KeyCode != KeyCode.None)
+                    if(current.Keybind.HasKeyCode)
                     {
-                        var down = current.KeyDownEvent ? current.GetKeyDown.Invoke : new Action(() => { });
-                        var key = current.KeyEvent ? current.GetKey.Invoke : new Action(() => { });
-                        var up = current.KeyUpEvent ? current.GetKeyUp.Invoke : new Action(() => { });
-                        actions.Add(new InputAction(current.KeyCode, down, key, up, current.CombinationKeyCode));
+                        var none = new Action(() => { });
+                        var down = current.KeyDownEvent ? current.GetKeyDown.Invoke : none;
+                        var key = current.KeyEvent ? current.GetKey.Invoke : none;
+                        var up = current.KeyUpEvent ? current.GetKeyUp.Invoke : none;
+                        actions.Add(new InputAction(current.Keybind, down, key, up));
                     }
                     else
                     {
@@ -82,11 +83,11 @@ namespace FPController
         /// <summary>
         /// How many events are stored.
         /// </summary>
-        public int EventCount
+        public List<InputEventData> Events
         {
             get
             {
-                return m_events.Count;
+                return m_events;
             }
         }
     }

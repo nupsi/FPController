@@ -21,12 +21,12 @@ namespace FPController
          * MonoBehaviour Functions.
          */
 
-        private void Awake()
+        protected void Awake()
         {
             m_actions = new List<IKeyEvent>();
         }
 
-        private void Update()
+        protected void Update()
         {
             //Loop through registered actions.
             foreach(var inputEvent in m_actions)

@@ -55,14 +55,14 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1692242549321862}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4440572899118238}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!4 &4440572899118238
 Transform:
   m_ObjectHideFlags: 1
@@ -146,6 +146,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_settings: {fileID: 11400000, guid: 922c423449351b447b21ffee20e5e777, type: 2}
+  m_drawRays: 0
 --- !u!114 &114641373253425866
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -159,9 +160,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_manager: {fileID: 0}
   m_events:
-  - Name: Jump
-    KeyCode: 32
-    CombinationKeyCode: 0
+  - Keybind: {fileID: 11400000, guid: 18bb85597cfbe174bb9199357dd061b6, type: 2}
     KeyDownEvent: 1
     KeyEvent: 0
     KeyUpEvent: 0
@@ -179,21 +178,19 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-      m_TypeName: FPController.InputEvent+CustomEvent, Assembly-CSharp, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
+      m_TypeName: FPController.CustomEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
     GetKey:
       m_PersistentCalls:
         m_Calls: []
-      m_TypeName: FPController.InputEvent+CustomEvent, Assembly-CSharp, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
+      m_TypeName: FPController.CustomEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
     GetKeyUp:
       m_PersistentCalls:
         m_Calls: []
-      m_TypeName: FPController.InputEvent+CustomEvent, Assembly-CSharp, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-  - Name: Crouch
-    KeyCode: 306
-    CombinationKeyCode: 0
+      m_TypeName: FPController.CustomEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+  - Keybind: {fileID: 11400000, guid: 22619605a77491642939d4df5b426738, type: 2}
     KeyDownEvent: 1
     KeyEvent: 0
     KeyUpEvent: 1
@@ -211,13 +208,13 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-      m_TypeName: FPController.InputEvent+CustomEvent, Assembly-CSharp, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
+      m_TypeName: FPController.CustomEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
     GetKey:
       m_PersistentCalls:
         m_Calls: []
-      m_TypeName: FPController.InputEvent+CustomEvent, Assembly-CSharp, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
+      m_TypeName: FPController.CustomEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
     GetKeyUp:
       m_PersistentCalls:
         m_Calls:
@@ -232,11 +229,9 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-      m_TypeName: FPController.InputEvent+CustomEvent, Assembly-CSharp, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-  - Name: Run
-    KeyCode: 304
-    CombinationKeyCode: 0
+      m_TypeName: FPController.CustomEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+  - Keybind: {fileID: 11400000, guid: 6b3a31d00aaf85e4784bb5db798aad74, type: 2}
     KeyDownEvent: 1
     KeyEvent: 0
     KeyUpEvent: 1
@@ -254,13 +249,13 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-      m_TypeName: FPController.InputEvent+CustomEvent, Assembly-CSharp, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
+      m_TypeName: FPController.CustomEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
     GetKey:
       m_PersistentCalls:
         m_Calls: []
-      m_TypeName: FPController.InputEvent+CustomEvent, Assembly-CSharp, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
+      m_TypeName: FPController.CustomEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
     GetKeyUp:
       m_PersistentCalls:
         m_Calls:
@@ -275,8 +270,8 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-      m_TypeName: FPController.InputEvent+CustomEvent, Assembly-CSharp, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
+      m_TypeName: FPController.CustomEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
 --- !u!114 &114750395930966476
 MonoBehaviour:
   m_ObjectHideFlags: 1

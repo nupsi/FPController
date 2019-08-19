@@ -19,11 +19,15 @@ Window for creating First Person Controller.
 Inspector for preset containing controllers properties.
 
 ## Input Manager / Input Event
-Binds public functions to keyboard events. One event contains main and secondary (combination) key code and keyboard events that are called. Single keyboard event can contain one or more functions.  
-Once the game start Input Event registers its events to a input manager. If there is no reference to a dedicated input manager the input event adds one to its game object. Dedicated input managers can be used to control differend inputs by activating and deactivating required managers.
+Binds public functions to keyboard events. One event contains scriptable keybind and keyboard events that are called. Single keyboard event can contain one or more functions.  
+Once the game start Input Event registers its events to a input manager. If there is no reference to a dedicated input manager the input event adds one to its game object. Dedicated input managers can be used to control differend inputs by activating and deactivating required managers.  
+Scriptable keybind can contain one or more primary key codes and multiple combination key codes. Single primary key and all the combination keys are required to trigger a event.  
 
 ![alt text](Documents/Images/input_event.png)  
 Inspector for input event.
+
+![alt text](Documents/Images/scriptable_keybind.png)  
+Scriptable Keybind for input event.
 
 ![alt text](Documents/Images/example_controller.png)  
 Example of Input Event binding Jump to Space.

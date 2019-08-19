@@ -325,37 +325,17 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 114641373253425866, guid: 4a067c687b6367247846cdf968ee7ef6,
-        type: 2}
-      propertyPath: m_events.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 114641373253425866, guid: 4a067c687b6367247846cdf968ee7ef6,
-        type: 2}
-      propertyPath: m_events.Array.data[3].GetKeyUp.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114641373253425866, guid: 4a067c687b6367247846cdf968ee7ef6,
-        type: 2}
-      propertyPath: m_events.Array.data[1].GetKeyDown.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114641373253425866, guid: 4a067c687b6367247846cdf968ee7ef6,
-        type: 2}
-      propertyPath: m_events.Array.data[3].GetKeyDown.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4177269807911002, guid: 4a067c687b6367247846cdf968ee7ef6, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 1.02
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4177269807911002, guid: 4a067c687b6367247846cdf968ee7ef6, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 2.613
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4177269807911002, guid: 4a067c687b6367247846cdf968ee7ef6, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 1.96
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4177269807911002, guid: 4a067c687b6367247846cdf968ee7ef6, type: 2}
       propertyPath: m_LocalRotation.x
@@ -382,107 +362,9 @@ Prefab:
       propertyPath: m_manager
       value: 
       objectReference: {fileID: 925956636}
-    - target: {fileID: 114641373253425866, guid: 4a067c687b6367247846cdf968ee7ef6,
-        type: 2}
-      propertyPath: m_events.Array.data[1].CombinationKeyCode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114641373253425866, guid: 4a067c687b6367247846cdf968ee7ef6,
-        type: 2}
-      propertyPath: m_events.Array.data[1].GetKeyDown.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114641373253425866, guid: 4a067c687b6367247846cdf968ee7ef6,
-        type: 2}
-      propertyPath: m_events.Array.data[1].GetKeyDown.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114641373253425866, guid: 4a067c687b6367247846cdf968ee7ef6,
-        type: 2}
-      propertyPath: m_events.Array.data[3].Name
-      value: Input Name
-      objectReference: {fileID: 0}
-    - target: {fileID: 114641373253425866, guid: 4a067c687b6367247846cdf968ee7ef6,
-        type: 2}
-      propertyPath: m_events.Array.data[3].GetKeyDown.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 988112298}
-    - target: {fileID: 114641373253425866, guid: 4a067c687b6367247846cdf968ee7ef6,
-        type: 2}
-      propertyPath: m_events.Array.data[3].GetKeyDown.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: StartRunning
-      objectReference: {fileID: 0}
-    - target: {fileID: 114641373253425866, guid: 4a067c687b6367247846cdf968ee7ef6,
-        type: 2}
-      propertyPath: m_events.Array.data[3].GetKeyDown.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114641373253425866, guid: 4a067c687b6367247846cdf968ee7ef6,
-        type: 2}
-      propertyPath: m_events.Array.data[3].GetKeyDown.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 114641373253425866, guid: 4a067c687b6367247846cdf968ee7ef6,
-        type: 2}
-      propertyPath: m_events.Array.data[3].GetKeyDown.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114641373253425866, guid: 4a067c687b6367247846cdf968ee7ef6,
-        type: 2}
-      propertyPath: m_events.Array.data[3].GetKeyDown.m_TypeName
-      value: FPController.CustomEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      objectReference: {fileID: 0}
-    - target: {fileID: 114641373253425866, guid: 4a067c687b6367247846cdf968ee7ef6,
-        type: 2}
-      propertyPath: m_events.Array.data[3].GetKey.m_TypeName
-      value: FPController.CustomEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      objectReference: {fileID: 0}
-    - target: {fileID: 114641373253425866, guid: 4a067c687b6367247846cdf968ee7ef6,
-        type: 2}
-      propertyPath: m_events.Array.data[3].GetKeyUp.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 988112298}
-    - target: {fileID: 114641373253425866, guid: 4a067c687b6367247846cdf968ee7ef6,
-        type: 2}
-      propertyPath: m_events.Array.data[3].GetKeyUp.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: StopRunning
-      objectReference: {fileID: 0}
-    - target: {fileID: 114641373253425866, guid: 4a067c687b6367247846cdf968ee7ef6,
-        type: 2}
-      propertyPath: m_events.Array.data[3].GetKeyUp.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114641373253425866, guid: 4a067c687b6367247846cdf968ee7ef6,
-        type: 2}
-      propertyPath: m_events.Array.data[3].GetKeyUp.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 114641373253425866, guid: 4a067c687b6367247846cdf968ee7ef6,
-        type: 2}
-      propertyPath: m_events.Array.data[3].GetKeyUp.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114641373253425866, guid: 4a067c687b6367247846cdf968ee7ef6,
-        type: 2}
-      propertyPath: m_events.Array.data[3].GetKeyUp.m_TypeName
-      value: FPController.CustomEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      objectReference: {fileID: 0}
-    - target: {fileID: 4177269807911002, guid: 4a067c687b6367247846cdf968ee7ef6, type: 2}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 90
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4a067c687b6367247846cdf968ee7ef6, type: 2}
   m_IsPrefabParent: 0
---- !u!114 &988112298 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114455309821604572, guid: 4a067c687b6367247846cdf968ee7ef6,
-    type: 2}
-  m_PrefabInternal: {fileID: 988112297}
-  m_Script: {fileID: 11500000, guid: cc2a95c3f3ff9394b87bb2bf187b7b33, type: 3}
 --- !u!1 &1214824321
 GameObject:
   m_ObjectHideFlags: 0

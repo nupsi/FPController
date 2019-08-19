@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEngine;
 using UnityEngine.Events;
 
 namespace FPController
@@ -20,33 +19,22 @@ namespace FPController
         /// <summary>
         /// Event name inside editor.
         /// </summary>
-        public string Name = "Input Event";
-
-        /// <summary>
-        /// Primary Key Code expected on key event.
-        /// </summary>
-        public KeyCode KeyCode;
-
-        /// <summary>
-        /// Combination key code.
-        /// Expected to be pressed down before primary key, if assigned.
-        /// </summary>
-        public KeyCode CombinationKeyCode = KeyCode.None;
+        public ScriptableKeybind Keybind;
 
         /// <summary>
         /// Is get key down event called.
         /// </summary>
-        public bool KeyDownEvent = true;
+        public bool KeyDownEvent;
 
         /// <summary>
         /// Is get key event called.
         /// </summary>
-        public bool KeyEvent = false;
+        public bool KeyEvent;
 
         /// <summary>
         /// Is get key up called.
         /// </summary>
-        public bool KeyUpEvent = true;
+        public bool KeyUpEvent;
 
         /// <summary>
         /// Events called on get key down.

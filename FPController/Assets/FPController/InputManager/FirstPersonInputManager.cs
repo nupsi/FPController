@@ -27,18 +27,18 @@ namespace FPController
          * Mono Behaviour Functions.
          */
 
-        private void Awake()
+        protected void Awake()
         {
             m_controller = GetComponent<FirstPersonController>();
         }
 
-        private void Update()
+        protected void Update()
         {
             //Update mouse movenent each frame.
             m_controller.MouseMove(MouseHorizontal, MouseVertical);
         }
 
-        private void FixedUpdate()
+        protected void FixedUpdate()
         {
             //Update movement every fixed update because we are using rigidbody and physics are updated on fixed update.
             m_controller.Move(Horizontal, Vertical);
