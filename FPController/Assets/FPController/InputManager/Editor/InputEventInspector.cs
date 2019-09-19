@@ -47,18 +47,16 @@ namespace FPController.FPEditor
                 var property = targetProperty.GetArrayElementAtIndex(count);
                 //Current event title.
                 var text = "Input Event: " + (target.Keybind == null ? "None" : "'" + target.Keybind.Name + "'");
-                //TODO: Make foldout the first level box layout.
-                m_expanded[count] = EditorGUILayout.Foldout(m_expanded[count], text);
+
+                //Start the parent foldout of a single event.
+                BeginBoxFoldout(count, text);
                 if(m_expanded[count])
                 {
-                    GUILayout.BeginVertical("Box");
-                    EditorGUILayout.Space();
-
                     //Object field for a scripptable keybind.
                     target.Keybind = EditorGUILayout.ObjectField("Scriptable Keybind", target.Keybind, typeof(ScriptableKeybind), false) as ScriptableKeybind;
 
                     //Toggle and property field for key down event.
-                    StartBox(color);
+                    StartVerticalBox(color);
                     target.KeyDownEvent = EditorGUILayout.Toggle("Get Key Down Event", target.KeyDownEvent);
                     if(target.KeyDownEvent)
                     {
@@ -67,7 +65,7 @@ namespace FPController.FPEditor
                     EditorGUILayout.EndVertical();
 
                     //Toggle and property field for key event.
-                    StartBox(color);
+                    StartVerticalBox(color);
                     target.KeyEvent = EditorGUILayout.Toggle("Get Key Event", target.KeyEvent);
                     if(target.KeyEvent)
                     {
@@ -76,7 +74,7 @@ namespace FPController.FPEditor
                     EditorGUILayout.EndVertical();
 
                     //Toggle and property field for key up event.
-                    StartBox(color);
+                    StartVerticalBox(color);
                     target.KeyUpEvent = EditorGUILayout.Toggle("Get Key Up Event", target.KeyUpEvent);
                     if(target.KeyUpEvent)
                     {
@@ -93,8 +91,8 @@ namespace FPController.FPEditor
                         return;
                     }
                     EditorGUILayout.Space();
-                    EditorGUILayout.EndVertical();
                 }
+                EditorGUILayout.EndVertical();
                 count++;
             }
 
@@ -113,12 +111,25 @@ namespace FPController.FPEditor
         /// Draw a EditorGUILayout.BeginVertical("Box") with a given color while retaining the original color.
         /// </summary>
         /// <param name="color">GUI color for the layout.</param>
-        private void StartBox(Color color)
+        private void StartVerticalBox(Color color)
         {
             var original = GUI.color;
             GUI.color = color;
             EditorGUILayout.BeginVertical("Box");
             GUI.color = original;
+        }
+
+        /// <summary>
+        /// Create foldout inside vertical box.
+        /// </summary>
+        /// <param name="index">Current toggle index.</param>
+        /// <param name="text">Foldout text.</param>
+        private void BeginBoxFoldout(int index, string text)
+        {
+            GUILayout.BeginVertical("Box");
+            EditorGUI.indentLevel++;
+            m_expanded[index] = EditorGUILayout.Foldout(m_expanded[index], text);
+            EditorGUI.indentLevel--;
         }
 
         /*

@@ -14,6 +14,11 @@ namespace FPController
          */
 
         /// <summary>
+        /// Empty action to use when action is disabled in InputEventData.
+        /// </summary>
+        private static readonly Action None = new Action(() => { });
+
+        /// <summary>
         /// Target input manager.
         /// Event data is converted to input actions and registered here.
         /// </summary>
@@ -21,7 +26,7 @@ namespace FPController
         private InputManager m_manager;
 
         /// <summary>
-        /// List of stored events.
+        /// List of stored input events.
         /// </summary>
         [SerializeField]
         private List<InputEventData> m_events;
@@ -65,10 +70,9 @@ namespace FPController
                 {
                     if(current.Keybind.HasKeyCode)
                     {
-                        var none = new Action(() => { });
-                        var down = current.KeyDownEvent ? current.GetKeyDown.Invoke : none;
-                        var key = current.KeyEvent ? current.GetKey.Invoke : none;
-                        var up = current.KeyUpEvent ? current.GetKeyUp.Invoke : none;
+                        var down = current.KeyDownEvent ? current.GetKeyDown.Invoke : None;
+                        var key = current.KeyEvent ? current.GetKey.Invoke : None;
+                        var up = current.KeyUpEvent ? current.GetKeyUp.Invoke : None;
                         actions.Add(new InputAction(current.Keybind, down, key, up));
                     }
                     else
@@ -81,7 +85,7 @@ namespace FPController
         }
 
         /// <summary>
-        /// How many events are stored.
+        /// List of stored input events.
         /// </summary>
         public List<InputEventData> Events
         {

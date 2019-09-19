@@ -4,7 +4,7 @@ using UnityEngine.Events;
 namespace FPController
 {
     /// <summary>
-    /// Exposing Unity Event to be shown in inspector.
+    /// Exposing Unity Event for the Inspector.
     /// </summary>
     [Serializable]
     public class CustomEvent : UnityEvent { }
@@ -41,7 +41,9 @@ namespace FPController
         /// </summary>
         public CustomEvent GetKeyDown;
 
-        //Events called on get key.
+        /// <summary>
+        /// Events called on get key.
+        /// </summary>
         public CustomEvent GetKey;
 
         /// <summary>

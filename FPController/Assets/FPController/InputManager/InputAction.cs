@@ -12,8 +12,19 @@ namespace FPController
          * Variables.
          */
 
+        /// <summary>
+        /// Delegate for actions called on GetKeyDown().
+        /// </summary>
         private readonly Action m_keyDownEvent;
+
+        /// <summary>
+        /// Delegate for actions called on GetKey().
+        /// </summary>
         private readonly Action m_keyEvent;
+
+        /// <summary>
+        /// Delegate for actions called on GetKeyUp().
+        /// </summary>
         private readonly Action m_keyUpEvent;
 
         /*
@@ -28,7 +39,7 @@ namespace FPController
 
         public InputAction(ScriptableKeybind _key, Action _downEvent, Action _event, Action _upEvent)
         {
-            KeyCode = _key;
+            Keybind = _key;
             m_keyEvent = _event;
             m_keyUpEvent = _upEvent;
             m_keyDownEvent = _downEvent;
@@ -36,7 +47,7 @@ namespace FPController
 
         public void GetKeyDown()
         {
-            if(m_keyDownEvent != null && KeyCode.GetKeyDown())
+            if(m_keyDownEvent != null && Keybind.GetKeyDown())
             {
                 m_keyDownEvent();
             }
@@ -44,7 +55,7 @@ namespace FPController
 
         public void GetKey()
         {
-            if(m_keyEvent != null && KeyCode.GetKey())
+            if(m_keyEvent != null && Keybind.GetKey())
             {
                 m_keyEvent();
             }
@@ -52,7 +63,7 @@ namespace FPController
 
         public void GetKeyUp()
         {
-            if(m_keyUpEvent != null && KeyCode.GetKeyUp())
+            if(m_keyUpEvent != null && Keybind.GetKeyUp())
             {
                 m_keyUpEvent();
             }
@@ -62,6 +73,9 @@ namespace FPController
          * Accessors.
          */
 
-        public ScriptableKeybind KeyCode { get; private set; }
+        /// <summary>
+        /// Scriptable Keybind for the input action.
+        /// </summary>
+        public ScriptableKeybind Keybind { get; private set; }
     }
 }
