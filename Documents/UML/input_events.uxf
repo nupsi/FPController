@@ -1,71 +1,50 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="14.2">
-  <zoom_level>17</zoom_level>
+  <zoom_level>16</zoom_level>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>561</x>
-      <y>476</y>
-      <w>204</w>
-      <h>68</h>
+      <x>432</x>
+      <y>304</y>
+      <w>272</w>
+      <h>64</h>
     </coordinates>
-    <panel_attributes>InputEventData
+    <panel_attributes>InputEventInspector
 valign=center</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>833</x>
-      <y>476</y>
-      <w>170</w>
-      <h>68</h>
+      <x>432</x>
+      <y>752</y>
+      <w>272</w>
+      <h>64</h>
     </coordinates>
-    <panel_attributes>CustomEvent
+    <panel_attributes>KeybindInspector
 valign=center</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>748</x>
-      <y>493</y>
-      <w>119</w>
-      <h>51</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;50.0;10.0</additional_attributes>
-  </element>
-  <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>289</x>
-      <y>476</y>
-      <w>204</w>
-      <h>68</h>
+      <x>720</x>
+      <y>416</y>
+      <w>192</w>
+      <h>64</h>
     </coordinates>
-    <panel_attributes>InputEvent
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+IKeyEvent
 valign=center</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>476</x>
-      <y>493</y>
-      <w>119</w>
-      <h>51</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;50.0;10.0</additional_attributes>
-  </element>
-  <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>833</x>
-      <y>595</y>
-      <w>170</w>
-      <h>68</h>
+      <x>960</x>
+      <y>416</y>
+      <w>176</w>
+      <h>64</h>
     </coordinates>
     <panel_attributes>InputAction
 valign=center</panel_attributes>
@@ -74,34 +53,91 @@ valign=center</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>289</x>
-      <y>595</y>
-      <w>204</w>
-      <h>68</h>
+      <x>448</x>
+      <y>640</y>
+      <w>240</w>
+      <h>64</h>
     </coordinates>
-    <panel_attributes>InputManager
+    <panel_attributes>ScriptableKeybind
 valign=center</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>272</x>
-      <y>357</y>
-      <w>238</w>
-      <h>68</h>
+      <x>464</x>
+      <y>528</y>
+      <w>208</w>
+      <h>64</h>
     </coordinates>
-    <panel_attributes>InputEventInspector
+    <panel_attributes>InputEventData
 valign=center</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>374</x>
-      <y>408</y>
-      <w>51</w>
-      <h>102</h>
+      <x>544</x>
+      <y>576</y>
+      <w>48</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;40.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>720</x>
+      <y>528</y>
+      <w>208</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>CustomEvent
+valign=center</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>656</x>
+      <y>544</y>
+      <w>96</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;40.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>464</x>
+      <y>416</y>
+      <w>208</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>InputEvent
+valign=center</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>544</x>
+      <y>464</y>
+      <w>48</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;40.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>544</x>
+      <y>352</y>
+      <w>48</w>
+      <h>96</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;40.0;10.0;10.0</additional_attributes>
@@ -109,47 +145,45 @@ valign=center</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>374</x>
-      <y>527</y>
-      <w>51</w>
-      <h>102</h>
+      <x>656</x>
+      <y>432</y>
+      <w>96</w>
+      <h>48</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;40.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>561</x>
-      <y>595</y>
-      <w>204</w>
-      <h>68</h>
-    </coordinates>
-    <panel_attributes>&lt;&lt;interface&gt;&gt;
-IKeyEvent
-valign=center</panel_attributes>
-    <additional_attributes/>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;40.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>748</x>
-      <y>612</y>
-      <w>119</w>
-      <h>51</h>
+      <x>896</x>
+      <y>432</y>
+      <w>96</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;50.0;10.0</additional_attributes>
+    <additional_attributes>10.0;10.0;40.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>476</x>
-      <y>612</y>
-      <w>119</w>
-      <h>51</h>
+      <x>544</x>
+      <y>688</y>
+      <w>48</w>
+      <h>96</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>50.0;10.0;10.0;10.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;40.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>672</x>
+      <y>464</y>
+      <w>416</w>
+      <h>240</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>240.0;10.0;240.0;130.0;10.0;130.0</additional_attributes>
   </element>
 </diagram>
