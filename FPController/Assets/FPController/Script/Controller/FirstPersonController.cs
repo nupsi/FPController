@@ -74,16 +74,6 @@ namespace FPController
         private FirstPersonPreset m_settings;
 
         /// <summary>
-        /// Is the controller currently running.
-        /// </summary>
-        private bool m_running;
-
-        /// <summary>
-        /// Is the controller currently crouching.
-        /// </summary>
-        private bool m_crouching;
-
-        /// <summary>
         /// Is there request to stand up after crouching.
         /// </summary>
         private bool m_requestingStandUp;
@@ -159,6 +149,8 @@ namespace FPController
             };
 
             ChangeHeight(Settings.Height);
+
+            m_targetSpeed = Settings.WalkSpeed;
 
             m_camera = GetComponentInChildren<Camera>();
             m_camera.fieldOfView = 70;
@@ -252,7 +244,7 @@ namespace FPController
             {
                 ChangeHeight(Settings.Height / 2);
                 m_targetSpeed = Settings.WalkSpeed * Settings.CrouchMultiplier;
-                m_crouching = true;
+                Crouching = true;
                 m_requestingStandUp = false;
             }
         }
@@ -263,7 +255,7 @@ namespace FPController
         /// </summary>
         public void CrouchUp()
         {
-            if(m_crouching)
+            if(Crouching)
             {
                 //Set Request for standing up.
                 //StandUp() will check if standing up is possible.
@@ -280,7 +272,7 @@ namespace FPController
             if(CanRun)
             {
                 m_targetSpeed = Settings.WalkSpeed * Settings.RunMultiplier;
-                m_running = true;
+                Running = true;
             }
         }
 
@@ -290,9 +282,9 @@ namespace FPController
         /// </summary>
         public void StopRunning()
         {
-            if(m_running)
+            if(Running)
             {
-                m_running = false;
+                Running = false;
                 m_targetSpeed = Settings.WalkSpeed;
             }
         }
@@ -378,12 +370,23 @@ namespace FPController
             m_previousForce = transform.InverseTransformDirection(force);
         }
 
+        /// <summary>
+        /// Calculates force for the controller when moving on the ground.
+        /// </summary>
+        /// <param name="_input">Input for movement.</param>
+        /// <returns>New force.</returns>
         private Vector3 GroundControl(Vector3 _input)
         {
             m_lastGround = m_previousForce;
             return transform.TransformDirection(_input);
         }
 
+        /// <summary>
+        /// Calculates force for the controller when moving in the air.
+        /// </summary>
+        /// <param name="_input">Input for movement.</param>
+        /// <param name="_force">Previous force.</param>
+        /// <returns>New force.</returns>
         private Vector3 AirControl(Vector3 _input, Vector3 _force)
         {
             //Target speed for movement.
@@ -392,14 +395,14 @@ namespace FPController
             var x = _force.x + (_input.x / 2);
             //Input z is slowed up, when moving in air.
             var z = _force.z + (_input.z / 2);
-            //Creating temporary variable to modify air movement.
-            var temp = new Vector3
-            {
-                x = Mathf.Clamp(x, -speed, speed),
-                z = m_lastGround.z > 0 ? Mathf.Clamp(z, 0, speed) : Mathf.Clamp(z, -speed, 0)
-            };
-            //Previous force affecting how new force is applied.
-            _force = m_lastGround == Vector3.zero ? _input : temp;
+            //Previous force affecting how a new force is applied.
+            _force = m_lastGround == Vector3.zero
+                ? _input
+                : new Vector3
+                {
+                    x = Mathf.Clamp(x, -speed, speed),
+                    z = m_lastGround.z > 0 ? Mathf.Clamp(z, 0, speed) : Mathf.Clamp(z, -speed, 0)
+                };
             //Lerping force towards zero if input is not given (slowing the charachter down).
             if(_input.x == 0)
             {
@@ -514,7 +517,7 @@ namespace FPController
                 {
                     ChangeHeight(Settings.Height);
                     m_targetSpeed = Settings.WalkSpeed;
-                    m_crouching = false;
+                    Crouching = false;
                     m_requestingStandUp = false;
                 }
             }
@@ -552,28 +555,6 @@ namespace FPController
          */
 
         /// <summary>
-        /// Is Running allowed.
-        /// </summary>
-        private bool CanRun
-        {
-            get
-            {
-                return !m_crouching;
-            }
-        }
-
-        /// <summary>
-        /// Is Crouching allowed.
-        /// </summary>
-        public bool CanCrouch
-        {
-            get
-            {
-                return !m_running;
-            }
-        }
-
-        /// <summary>
         /// First person controller settings.
         /// </summary>
         public FirstPersonPreset Settings
@@ -590,6 +571,49 @@ namespace FPController
         }
 
         /// <summary>
+        /// Is the controller currently standing on ground.
+        /// </summary>
+        public bool Grounded
+        {
+            get
+            {
+                return Physics.SphereCast(new Ray(GroundSphereOffset, Vector3.down), Settings.Radius, 0.05f);
+            }
+        }
+
+        /// <summary>
+        /// Is the controller currently running.
+        /// </summary>
+        public bool Running { get; protected set; }
+
+        /// <summary>
+        /// Is the controller currently crouching.
+        /// </summary>
+        public bool Crouching { get; protected set; }
+
+        /// <summary>
+        /// Is Running allowed.
+        /// </summary>
+        private bool CanRun
+        {
+            get
+            {
+                return !Crouching;
+            }
+        }
+
+        /// <summary>
+        /// Is Crouching allowed.
+        /// </summary>
+        private bool CanCrouch
+        {
+            get
+            {
+                return !Running;
+            }
+        }
+
+        /// <summary>
         /// Camera offset.
         /// Cameras local position in global position.
         /// </summary>
@@ -598,17 +622,6 @@ namespace FPController
             get
             {
                 return transform.position + (Vector3.up * (m_collider.height - 0.1f));
-            }
-        }
-
-        /// <summary>
-        /// Is the controller currently standing on ground.
-        /// </summary>
-        private bool Grounded
-        {
-            get
-            {
-                return Physics.SphereCast(new Ray(GroundSphereOffset, Vector3.down), Settings.Radius, 0.05f);
             }
         }
 
@@ -636,7 +649,7 @@ namespace FPController
         {
             get
             {
-                return m_crouching
+                return Crouching
                     ? !Physics.SphereCast(new Ray(GroundSphereCenter, Vector3.up), Settings.Radius, Settings.Height - (Settings.Radius * 2))
                     : true;
             }
