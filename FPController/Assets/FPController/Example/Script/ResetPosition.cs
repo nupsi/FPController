@@ -40,17 +40,11 @@ namespace FPController.Example
         private void OnDrawGizmosSelected()
         {
             var collider = GetComponent<BoxCollider>();
-            var position = transform.position + collider.center;
-            var size = new Vector3
-            {
-                x = transform.localScale.x * collider.size.x,
-                y = transform.localScale.y * collider.size.y,
-                z = transform.localScale.z * collider.size.z
-            };
+            Gizmos.matrix = transform.localToWorldMatrix;
             Gizmos.color = new Color(0, 0, 1, 0.5f);
-            Gizmos.DrawCube(position, size);
+            Gizmos.DrawCube(collider.center, collider.size);
             Gizmos.color = new Color(0, 0, 1, 1);
-            Gizmos.DrawWireCube(position, size);
+            Gizmos.DrawWireCube(collider.center, collider.size);
         }
 
         /*

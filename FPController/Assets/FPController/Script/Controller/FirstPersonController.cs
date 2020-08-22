@@ -5,6 +5,7 @@ namespace FPController
     /// <summary>
     /// First Person Controller using Rigidbody for movement.
     /// Call Move(h, v) and MouseMove(h, v) to apply movement.
+    /// Use Pause(p) and Freeze(f) to stop and resume the controller.
     /// Other movement functions: Jump(), CrouchDown(), CrouchUp(), StartRunning() and StopRunning().
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]
@@ -78,6 +79,11 @@ namespace FPController
         /// </summary>
         private bool m_requestingStandUp;
 
+        /// <summary>
+        /// Is the controller currently paused.
+        /// </summary>
+        private bool m_paused;
+
         /*
          * MonoBehaviour Functions.
          */
@@ -100,8 +106,11 @@ namespace FPController
 
         protected void FixedUpdate()
         {
-            //Check if standing up is requested and possible.
-            StandUp();
+            if(!m_paused)
+            {
+                //Check if standing up is requested and possible.
+                StandUp();
+            }
             //Set target position for camera.
             m_targetPosition = CameraOffset;
         }
@@ -240,7 +249,7 @@ namespace FPController
         /// </summary>
         public void CrouchDown()
         {
-            if(CanCrouch)
+            if(CanCrouch && !m_paused)
             {
                 ChangeHeight(Settings.Height / 2);
                 m_targetSpeed = Settings.WalkSpeed * Settings.CrouchMultiplier;
@@ -269,7 +278,7 @@ namespace FPController
         /// </summary>
         public void StartRunning()
         {
-            if(CanRun)
+            if(CanRun && !m_paused)
             {
                 m_targetSpeed = Settings.WalkSpeed * Settings.RunMultiplier;
                 Running = true;
@@ -302,6 +311,32 @@ namespace FPController
             }
         }
 
+        /// <summary>
+        /// Freeze the controller by preventing user input and making the rigidbody kinematic.
+        /// </summary>
+        /// <param name="freeze">Freeze/Unfreeze.</param>
+        public void Freeze(bool freeze)
+        {
+            m_rigidbody.isKinematic = freeze;
+            Pause(freeze);
+        }
+
+        /// <summary>
+        /// Pause the controller. Prevent Move() and Look() input.
+        /// Rigidbody is still active.
+        /// </summary>
+        /// <param name="pause">Pause/Unpause.</param>
+        public void Pause(bool pause)
+        {
+            Move(Vector3.zero);
+            m_previousForce = Vector3.zero;
+            m_paused = pause;
+            if(m_rigidbody.isKinematic && !pause)
+            {
+                Debug.LogWarning("Unpausing freezed First Person Controller! Use Freeze(false) instead.", gameObject);
+            }
+        }
+
         /*
          * Private Functions.
          */
@@ -316,7 +351,7 @@ namespace FPController
         private void UpdateCamera()
         {
             //Check distance between body and camera.
-            if(Vector3.Distance(transform.position, m_camera.transform.position) > Settings.Height
+            if(Vector3.Distance(transform.position, m_camera.transform.position) > Settings.Height * 1.3f
                 || Mathf.Round(m_rigidbody.velocity.magnitude * 10) / 10 <= 0.1f)
             {
                 SetCamera();
@@ -346,23 +381,27 @@ namespace FPController
         /// <param name="_input">Input for movement.</param>
         private void Move(Vector3 _input)
         {
-            //If charachter is on air, previous force is used to control velocity.
-            var force = m_previousForce;
-            force = Grounded
+            if(m_rigidbody == null)
+                return;
+
+            if(m_paused)
+                _input = Vector3.zero;
+
+            //Convert current input into force.
+            var force = Grounded
                 ? GroundControl(_input)
-                : AirControl(_input, force);
+                : AirControl(_input, m_previousForce);
+            force.y = 0;
 
             //Store rigidbodys current velocity.
             var velocity = m_rigidbody.velocity;
+            velocity.y = 0;
+
             //Calculate change between current and target velocity.
-            var change = force - velocity;
-            //Y velocity should be controller by jump and gravity.
-            change.y = 0;
+            var change = Vector3.ClampMagnitude(force, m_targetSpeed) - Vector3.ClampMagnitude(velocity, m_targetSpeed);
             //Add missing force to rigidbody.
             m_rigidbody.AddForce(change, ForceMode.Impulse);
 
-            //Clamp velocity to limit max speed.
-            ClampVelocity();
             //Update Capsule Colliders friction to allow/prevent sliding along surfaces.
             UpdateFriction(_input);
             StickToGround();
@@ -378,6 +417,11 @@ namespace FPController
         private Vector3 GroundControl(Vector3 _input)
         {
             m_lastGround = m_previousForce;
+            if(_input == Vector3.zero)
+            {
+                //Use current velocity to slow down the movement.
+                return -m_rigidbody.velocity;
+            }
             return transform.TransformDirection(_input);
         }
 
@@ -389,53 +433,21 @@ namespace FPController
         /// <returns>New force.</returns>
         private Vector3 AirControl(Vector3 _input, Vector3 _force)
         {
-            //Target speed for movement.
-            var speed = m_targetSpeed;
-            //Input x is slowed downm when moving in air.
-            var x = _force.x + (_input.x / 2);
-            //Input z is slowed up, when moving in air.
-            var z = _force.z + (_input.z / 2);
             //Previous force affecting how a new force is applied.
             _force = m_lastGround == Vector3.zero
                 ? _input
-                : new Vector3
-                {
-                    x = Mathf.Clamp(x, -speed, speed),
-                    z = m_lastGround.z > 0 ? Mathf.Clamp(z, 0, speed) : Mathf.Clamp(z, -speed, 0)
-                };
+                : _force + (_input * 0.5f);
             //Lerping force towards zero if input is not given (slowing the charachter down).
             if(_input.x == 0)
             {
-                _force.x = Mathf.Lerp(_force.x, 0, 2 * Time.deltaTime);
+                _force.x = Mathf.Lerp(_force.x, 0, 2 * Time.fixedDeltaTime);
             }
             if(_input.z == 0)
             {
-                _force.z = Mathf.Lerp(_force.z, 0, 2 * Time.deltaTime);
+                _force.z = Mathf.Lerp(_force.z, 0, 2 * Time.fixedDeltaTime);
             }
             //Convert new force to global space.
             return transform.TransformDirection(_force);
-        }
-
-        /// <summary>
-        /// Clamps rigidbody velocity to target speed.
-        /// </summary>
-        private void ClampVelocity()
-        {
-            var y = m_rigidbody.velocity.y;
-            var velocity = m_rigidbody.velocity;
-
-            if(Grounded)
-            {
-                velocity = Vector3.ClampMagnitude(velocity, m_targetSpeed);
-            }
-            else
-            {
-                velocity.y = 0;
-                velocity = Vector3.ClampMagnitude(velocity, m_targetSpeed);
-                velocity.y = y;
-            }
-
-            m_rigidbody.velocity = velocity;
         }
 
         /// <summary>
@@ -471,8 +483,8 @@ namespace FPController
         /// </summary>
         private void StickToGround()
         {
-            var hit = new RaycastHit();
-            if(Physics.SphereCast(GroundSphereCenter, Settings.Radius, Vector3.down, out hit, 0.075f))
+            RaycastHit hit;
+            if(Physics.SphereCast(GroundSphereCenter, SafeRadius, Vector3.down, out hit, 0.075f))
             {
                 if(SurfaceAngle < Settings.MaxSlopeAngle)
                 {
@@ -487,7 +499,7 @@ namespace FPController
         /// <param name="_input">Input.</param>
         private void MouseMove(Vector2 _input)
         {
-            if(Cursor.lockState != CursorLockMode.Locked)
+            if(Cursor.lockState != CursorLockMode.Locked || m_paused)
                 return;
 
             transform.Rotate(new Vector3(0, _input.x, 0));
@@ -577,7 +589,7 @@ namespace FPController
         {
             get
             {
-                return Physics.SphereCast(new Ray(GroundSphereOffset, Vector3.down), Settings.Radius, 0.05f);
+                return Physics.SphereCast(new Ray(GroundSphereOffset, Vector3.down), SafeRadius, 0.1f);
             }
         }
 
@@ -633,7 +645,7 @@ namespace FPController
             get
             {
                 var angle = 0f;
-                var hit = new RaycastHit();
+                RaycastHit hit;
                 if(Physics.SphereCast(GroundSphereOffset, Settings.Radius, Vector3.down, out hit, 0.05f))
                 {
                     angle = Vector3.Angle(Vector3.up, hit.normal);
@@ -650,7 +662,7 @@ namespace FPController
             get
             {
                 return Crouching
-                    ? !Physics.SphereCast(new Ray(GroundSphereCenter, Vector3.up), Settings.Radius, Settings.Height - (Settings.Radius * 2))
+                    ? !Physics.SphereCast(new Ray(GroundSphereCenter, Vector3.up), SafeRadius, Settings.Height - (Settings.Radius * 2))
                     : true;
             }
         }
@@ -674,6 +686,14 @@ namespace FPController
             get
             {
                 return GroundSphereCenter + (Vector3.up * (Settings.Radius * 0.1f));
+            }
+        }
+
+        private float SafeRadius
+        {
+            get
+            {
+                return Settings.Radius * 0.95f;
             }
         }
     }

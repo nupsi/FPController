@@ -78,7 +78,7 @@ namespace FPController
         {
             get
             {
-                return Input.GetAxis("Horizontal");
+                return Input.GetAxisRaw("Horizontal");
             }
         }
 
@@ -90,7 +90,7 @@ namespace FPController
         {
             get
             {
-                return Input.GetAxis("Vertical");
+                return Input.GetAxisRaw("Vertical");
             }
         }
     }
